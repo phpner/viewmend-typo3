@@ -24,14 +24,14 @@
 
 $EM_CONF[$_EXTKEY] = [
     'title' => 'ViewMend Site Tracker',
-    'description' => 'Official ViewMend integration for confirmed TYPO3 website change and deployment monitoring.',
+    'description' => 'Trigger ViewMend Site Tracker checks after TYPO3 content updates and deployments to catch unexpected website changes.',
     'category' => 'services',
     'author' => 'ViewMend',
     'author_email' => 'support@viewmend.com',
     'author_company' => 'ViewMend',
     'state' => 'stable',
     'clearCacheOnLoad' => false,
-    'version' => '1.0.0',
+    'version' => '1.0.1',
     'constraints' => [
         'depends' => [
             'php' => '8.3.0-8.5.99',

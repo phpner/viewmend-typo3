@@ -1,6 +1,6 @@
 {
     "name": "viewmend/typo3-site-tracker",
-    "description": "Official ViewMend Site Tracker integration for TYPO3 website change and deployment monitoring.",
+    "description": "Trigger ViewMend Site Tracker checks after TYPO3 content updates and deployments to catch unexpected website changes.",
     "type": "typo3-cms-extension",
     "license": "GPL-2.0-or-later",
     "homepage": "https://viewmend.com/site-tracker",
@@ -74,7 +74,7 @@
     "extra": {
         "typo3/cms": {
             "extension-key": "viewmend_site_tracker",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "Package": {
                 "providesPackages": []
             }

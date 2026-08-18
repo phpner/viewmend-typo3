@@ -1,8 +1,8 @@
 # ViewMend Site Tracker for TYPO3
 
-[ViewMend](https://viewmend.com/) is a website quality and operations platform. Site Tracker is one ViewMend product module: it turns confirmed website changes and deployment markers into durable operational events that can trigger the checks configured in ViewMend.
+[ViewMend](https://viewmend.com/) is a website quality and operations platform. Site Tracker monitors important public pages after content updates and deployments so teams can identify unexpected SEO, performance, content and technical changes.
 
-ViewMend Site Tracker for TYPO3 is the official extension for [TYPO3 website change monitoring](https://viewmend.com/site-tracker). It observes public-state transitions inside TYPO3, stores each event locally, and delivers it asynchronously through the published `viewmend/sdk` contract. See the [integration guides](https://viewmend.com/guides/integrations) for the wider ViewMend ecosystem.
+ViewMend Site Tracker for TYPO3 is the official extension for [TYPO3 website change monitoring](https://viewmend.com/site-tracker). It records published content changes and deployment markers, stores each event locally, and delivers it asynchronously through the published `viewmend/sdk` contract. See the [integration guides](https://viewmend.com/guides/integrations) for the wider ViewMend ecosystem.
 
 ## Compatibility
 

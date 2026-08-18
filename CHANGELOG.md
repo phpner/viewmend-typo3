@@ -4,6 +4,12 @@ All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-08-18
+
+### Changed
+
+- Replaced the generic extension icon with the official ViewMend brand mark in the TYPO3 backend and TER listing.
+
 ## [1.0.0] - 2026-08-18
 
 ### Added
