@@ -1,0 +1,96 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  compatibility:
+    name: TYPO3 ${{ matrix.typo3 }} / PHP ${{ matrix.php }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        typo3: ['13.4', '14.3']
+        php: ['8.3', '8.4', '8.5']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: intl, mbstring, openssl, pdo_sqlite
+          coverage: none
+      - run: >-
+          composer update --no-interaction --prefer-dist
+          --with=typo3/cms-backend:^${{ matrix.typo3 }}
+          --with=typo3/cms-core:^${{ matrix.typo3 }}
+          --with=typo3/cms-fluid:^${{ matrix.typo3 }}
+          --with=typo3/cms-frontend:^${{ matrix.typo3 }}
+          --with=typo3/cms-reports:^${{ matrix.typo3 }}
+          --with=typo3/cms-scheduler:^${{ matrix.typo3 }}
+          --with=typo3/cms-workspaces:^${{ matrix.typo3 }}
+          --with-all-dependencies
+      - run: composer validate --strict
+      - run: vendor/bin/typo3 list viewmend --no-ansi
+      - run: vendor/bin/phpunit --testsuite unit,integration,functional --display-deprecations --display-warnings
+
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          extensions: intl, mbstring, openssl, pdo_sqlite
+          coverage: none
+      - uses: ramsey/composer-install@v3
+      - run: vendor/bin/phpcs
+      - run: vendor/bin/phpstan analyse --no-progress --memory-limit=512M --debug
+
+  mariadb:
+    runs-on: ubuntu-latest
+    services:
+      mariadb:
+        image: mariadb:10.11
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: viewmend_test
+          MARIADB_USER: viewmend
+          MARIADB_PASSWORD: viewmend
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mariadb-admin ping -h 127.0.0.1 -u root -proot"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+    env:
+      VIEWMEND_TEST_DB_HOST: 127.0.0.1
+      VIEWMEND_TEST_DB_PORT: 3306
+      VIEWMEND_TEST_DB_NAME: viewmend_test
+      VIEWMEND_TEST_DB_USER: viewmend
+      VIEWMEND_TEST_DB_PASSWORD: viewmend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: intl, mbstring, openssl, pdo_mysql
+          coverage: none
+      - uses: ramsey/composer-install@v3
+      - run: vendor/bin/phpunit --testsuite mariadb --display-deprecations --display-warnings
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker compose up --build --pull always --wait --wait-timeout 240
+      - run: docker compose exec -T web vendor/bin/typo3 viewmend-e2e:scenario
+      - run: docker compose exec -T web vendor/bin/typo3 viewmend:status
+      - if: failure()
+        run: docker compose logs --no-color --tail=300
+      - if: always()
+        run: docker compose down --volumes

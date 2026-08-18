@@ -1,0 +1,6 @@
+parameters:
+  level: max
+  paths:
+    - Classes
+  tmpDir: .phpstan-cache
+  treatPhpDocTypesAsCertain: false

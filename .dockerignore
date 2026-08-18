@@ -1,0 +1,10 @@
+/.git
+/.github
+/.ddev/site
+/.phpunit.cache
+/.phpstan-cache
+/build
+/public
+/var
+/vendor
+.DS_Store

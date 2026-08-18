@@ -1,0 +1,11 @@
+<nav aria-label="ViewMend Site Tracker sections" class="mb-4">
+    <ul class="nav nav-tabs">
+        <li class="nav-item"><a class="nav-link {f:if(condition: navOverview, then: 'active')}" href="{overviewUri}">Overview</a></li>
+        <li class="nav-item"><a class="nav-link {f:if(condition: navConnection, then: 'active')}" href="{connectionUri}">Connection</a></li>
+        <li class="nav-item"><a class="nav-link {f:if(condition: navRules, then: 'active')}" href="{rulesUri}">Event rules</a></li>
+        <li class="nav-item"><a class="nav-link {f:if(condition: navActivity, then: 'active')}" href="{activityUri}">Activity</a></li>
+    </ul>
+</nav>
+<f:if condition="{notice}">
+    <div class="alert alert-{noticeSeverity}" role="status">{notice}</div>
+</f:if>

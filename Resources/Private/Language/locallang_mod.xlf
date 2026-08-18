@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="en" datatype="plaintext" original="messages" date="2026-08-18T00:00:00Z" product-name="viewmend_site_tracker">
+    <header/>
+    <body>
+      <trans-unit id="mlang_tabs_tab"><source>ViewMend Site Tracker</source></trans-unit>
+      <trans-unit id="mlang_labels_tablabel"><source>Site Tracker</source></trans-unit>
+      <trans-unit id="mlang_labels_tabdescr"><source>Monitor confirmed TYPO3 website changes and deployment markers with ViewMend.</source></trans-unit>
+    </body>
+  </file>
+</xliff>

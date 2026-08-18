@@ -1,0 +1,22 @@
+{
+    "name": "viewmend/typo3-site-tracker-e2e",
+    "description": "Test-only TYPO3 support package for ViewMend Site Tracker end-to-end verification.",
+    "type": "typo3-cms-extension",
+    "license": "GPL-2.0-or-later",
+    "require": {
+        "php": "^8.3",
+        "guzzlehttp/guzzle": "^7.0",
+        "typo3/cms-core": "^13.4 || ^14.3",
+        "viewmend/typo3-site-tracker": "@dev"
+    },
+    "autoload": {
+        "psr-4": {
+            "ViewMend\\Typo3SiteTrackerE2E\\": "Classes/"
+        }
+    },
+    "extra": {
+        "typo3/cms": {
+            "extension-key": "viewmend_site_tracker_e2e"
+        }
+    }
+}

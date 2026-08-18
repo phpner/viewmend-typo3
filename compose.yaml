@@ -1,0 +1,73 @@
+name: viewmend-typo3
+
+services:
+  db:
+    image: mariadb:10.11
+    environment:
+      MARIADB_ROOT_PASSWORD: root-local-only
+      MARIADB_DATABASE: typo3
+      MARIADB_USER: typo3
+      MARIADB_PASSWORD: typo3-local-only
+    healthcheck:
+      test: ['CMD', 'healthcheck.sh', '--connect', '--innodb_initialized']
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    volumes:
+      - db-data:/var/lib/mysql
+
+  fake-api:
+    image: php:8.4-cli
+    command: ['php', '-S', '0.0.0.0:8080', '/app/router.php']
+    volumes:
+      - ./Tests/E2E/FakeApi:/app:ro
+      - fake-api-state:/state
+
+  web:
+    build:
+      context: .
+      dockerfile: Tests/E2E/Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+      fake-api:
+        condition: service_started
+    environment:
+      TYPO3_CONTEXT: Development/Docker
+      TYPO3_DB_DRIVER: mysqli
+      TYPO3_DB_USERNAME: typo3
+      TYPO3_DB_PASSWORD: typo3-local-only
+      TYPO3_DB_PORT: 3306
+      TYPO3_DB_HOST: db
+      TYPO3_DB_DBNAME: typo3
+      TYPO3_SETUP_ADMIN_EMAIL: local-admin@example.invalid
+      TYPO3_SETUP_ADMIN_USERNAME: admin
+      TYPO3_SETUP_ADMIN_PASSWORD: ViewMend-Local-Only-1!
+      TYPO3_SETUP_CREATE_SITE: http://127.0.0.1:8088/
+      TYPO3_PROJECT_NAME: ViewMend TYPO3 Extension Test
+      TYPO3_SERVER_TYPE: apache
+      VIEWMEND_API_TOKEN: local-test-token-not-for-production
+      VIEWMEND_INTEGRATION_ID: local-test-integration
+      VIEWMEND_SITE_IDENTIFIER: main
+      VIEWMEND_SITE_URL: http://127.0.0.1:8088/
+      VIEWMEND_ENVIRONMENT: testing
+      VIEWMEND_E2E_API_BASE: http://fake-api:8080/api/v1
+    ports:
+      - '127.0.0.1:8088:80'
+    healthcheck:
+      test: ['CMD', 'curl', '--fail', '--silent', 'http://127.0.0.1/typo3/']
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+    volumes:
+      - typo3-config:/var/www/html/config
+      - typo3-fileadmin:/var/www/html/public/fileadmin
+      - typo3-var:/var/www/html/var
+
+volumes:
+  db-data:
+  fake-api-state:
+  typo3-config:
+  typo3-fileadmin:
+  typo3-var:

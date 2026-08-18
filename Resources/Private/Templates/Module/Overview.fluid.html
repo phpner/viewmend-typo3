@@ -1,0 +1,42 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+<f:layout name="Module" />
+<f:section name="Content">
+    <h1>ViewMend Site Tracker</h1>
+    <p class="lead">Operational status for confirmed TYPO3 website changes and deployment markers.</p>
+    <f:render partial="Module/Navigation" arguments="{_all}" />
+
+    <f:if condition="{ready}">
+        <f:then><div class="alert alert-success" role="status"><strong>Ready.</strong> New events are stored locally before asynchronous delivery.</div></f:then>
+        <f:else>
+            <div class="alert alert-warning" role="alert">
+                <strong>Setup needs attention.</strong>
+                <ul class="mb-0"><f:for each="{issues}" as="issue"><li>{issue}</li></f:for></ul>
+            </div>
+        </f:else>
+    </f:if>
+
+    <div class="row row-cols-1 row-cols-md-3 g-3 mb-4">
+        <div class="col"><div class="card h-100"><div class="card-body"><h2 class="h5">Waiting</h2><p class="display-6 mb-0">{waiting}</p></div></div></div>
+        <div class="col"><div class="card h-100"><div class="card-body"><h2 class="h5">Delivered</h2><p class="display-6 mb-0">{delivered}</p></div></div></div>
+        <div class="col"><div class="card h-100"><div class="card-body"><h2 class="h5">Needs attention</h2><p class="display-6 mb-0">{attention}</p></div></div></div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header"><strong>Connection</strong></div>
+        <div class="card-body">
+            <dl class="row mb-0">
+                <dt class="col-sm-3">TYPO3 site</dt><dd class="col-sm-9">{siteIdentifier}<f:if condition="{siteUrl}"> — <a href="{siteUrl}" target="_blank" rel="noopener noreferrer">{siteUrl}</a></f:if></dd>
+                <dt class="col-sm-3">Environment</dt><dd class="col-sm-9">{environment}</dd>
+                <dt class="col-sm-3">Token source</dt><dd class="col-sm-9">{tokenSource}</dd>
+                <dt class="col-sm-3">Cancelled history</dt><dd class="col-sm-9">{cancelled}</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-lg-6"><div class="card h-100"><div class="card-header"><strong>Worker</strong></div><div class="card-body"><p><strong>Last run:</strong> {lastWorker}</p><p class="mb-0 text-break">{lastWorkerSummary}</p></div></div></div>
+        <div class="col-lg-6"><div class="card h-100"><div class="card-header"><strong>Connection test</strong></div><div class="card-body"><p><strong>Last queued:</strong> {lastTest}</p><p class="mb-0 text-break"><code>{lastTestEventId}</code></p></div></div></div>
+    </div>
+    <f:if condition="{lastError}"><div class="alert alert-danger mt-4" role="alert"><strong>Last delivery error:</strong> {lastError}</div></f:if>
+</f:section>
+</html>

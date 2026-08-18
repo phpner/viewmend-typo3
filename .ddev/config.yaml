@@ -1,0 +1,14 @@
+name: viewmend-typo3
+type: typo3
+docroot: .ddev/site/public
+php_version: '8.4'
+webserver_type: apache-fpm
+database:
+  type: mariadb
+  version: '10.11'
+web_environment:
+  - TYPO3_CONTEXT=Development/DDEV
+composer_root: .ddev/site
+use_dns_when_possible: true
+router_http_port: '80'
+router_https_port: '443'

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">ViewMend Site Tracker</title>
+  <path fill="#6f42c1" d="M8 10h48v12H8zM8 26h48v28H8z"/>
+  <path fill="#fff" d="M16 17h4v-2h-4zm9 0h4v-2h-4zm9 0h4v-2h-4zM17 39l8 8 22-22 4 4-26 26-12-12z"/>
+</svg>

@@ -1,0 +1,94 @@
+{
+    "name": "viewmend/typo3-site-tracker",
+    "description": "Official ViewMend Site Tracker integration for TYPO3 website change and deployment monitoring.",
+    "type": "typo3-cms-extension",
+    "license": "GPL-2.0-or-later",
+    "homepage": "https://viewmend.com/site-tracker",
+    "keywords": [
+        "deployment-monitoring",
+        "site-tracker",
+        "typo3",
+        "viewmend",
+        "website-change-monitoring"
+    ],
+    "authors": [
+        {
+            "name": "ViewMend",
+            "email": "support@viewmend.com",
+            "homepage": "https://viewmend.com/",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "email": "support@viewmend.com",
+        "issues": "https://github.com/phpner/viewmend-typo3/issues",
+        "source": "https://github.com/phpner/viewmend-typo3"
+    },
+    "funding": [
+        {
+            "type": "custom",
+            "url": "https://viewmend.com/"
+        }
+    ],
+    "require": {
+        "php": ">=8.3 <8.6",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "ext-openssl": "*",
+        "psr/log": "^3.0",
+        "typo3/cms-backend": "^13.4 || ^14.3",
+        "typo3/cms-core": "^13.4 || ^14.3",
+        "typo3/cms-fluid": "^13.4 || ^14.3",
+        "typo3/cms-frontend": "^13.4 || ^14.3",
+        "typo3/cms-reports": "^13.4 || ^14.3",
+        "typo3/cms-scheduler": "^13.4 || ^14.3",
+        "typo3/cms-workspaces": "^13.4 || ^14.3",
+        "viewmend/sdk": "^1.0"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^2.1",
+        "phpunit/phpunit": "^11.5",
+        "squizlabs/php_codesniffer": "^3.13"
+    },
+    "autoload": {
+        "psr-4": {
+            "ViewMend\\Typo3SiteTracker\\": "Classes/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ViewMend\\Typo3SiteTracker\\Tests\\": "Tests/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "typo3/class-alias-loader": true,
+            "typo3/cms-composer-installers": true
+        },
+        "platform": {
+            "php": "8.3.0"
+        },
+        "preferred-install": "dist",
+        "sort-packages": true
+    },
+    "extra": {
+        "typo3/cms": {
+            "extension-key": "viewmend_site_tracker",
+            "version": "1.0.0",
+            "Package": {
+                "providesPackages": []
+            }
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "analyse": "phpstan analyse --no-progress --memory-limit=512M",
+        "cs:check": "phpcs",
+        "quality": [
+            "@composer validate --strict",
+            "@cs:check",
+            "@analyse",
+            "@test"
+        ]
+    }
+}

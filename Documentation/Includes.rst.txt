@@ -1,0 +1,3 @@
+..  |extension_key| replace:: viewmend_site_tracker
+..  |package_name| replace:: viewmend/typo3-site-tracker
+..  |product| replace:: ViewMend Site Tracker

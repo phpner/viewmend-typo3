@@ -1,0 +1,81 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  ViewMend\Typo3SiteTracker\:
+    resource: '../Classes/*'
+    exclude:
+      - '../Classes/Domain/*'
+      - '../Classes/Configuration/TrackerConfiguration.php'
+      - '../Classes/Persistence/Delivery.php'
+      - '../Classes/Persistence/Observation.php'
+      - '../Classes/Site/ResolvedPublicRecord.php'
+      - '../Classes/Transport/DeliveryException.php'
+      - '../Classes/Application/WorkerReport.php'
+
+  ViewMend\Typo3SiteTracker\Domain\DeliveryStateMachine: ~
+  ViewMend\Typo3SiteTracker\Domain\LifecycleTransitionMapper: ~
+  ViewMend\Typo3SiteTracker\Domain\RetryPolicy: ~
+
+  ViewMend\Typo3SiteTracker\Support\ClockInterface:
+    alias: ViewMend\Typo3SiteTracker\Support\SystemClock
+
+  ViewMend\Typo3SiteTracker\Support\JitterInterface:
+    alias: ViewMend\Typo3SiteTracker\Support\CryptoJitter
+
+  ViewMend\Typo3SiteTracker\Configuration\SettingsRepositoryInterface:
+    alias: ViewMend\Typo3SiteTracker\Persistence\DatabaseSettingsRepository
+
+  ViewMend\Typo3SiteTracker\Persistence\ConnectionProviderInterface:
+    alias: ViewMend\Typo3SiteTracker\Persistence\Typo3ConnectionProvider
+
+  ViewMend\Typo3SiteTracker\Persistence\DeliveryRepositoryInterface:
+    alias: ViewMend\Typo3SiteTracker\Persistence\DoctrineDeliveryRepository
+
+  ViewMend\Typo3SiteTracker\Persistence\ObservationRepositoryInterface:
+    alias: ViewMend\Typo3SiteTracker\Persistence\DoctrineObservationRepository
+
+  ViewMend\Typo3SiteTracker\Site\PublicRecordResolverInterface:
+    alias: ViewMend\Typo3SiteTracker\Site\Typo3PublicRecordResolver
+
+  ViewMend\Typo3SiteTracker\Transport\DeliveryTransportInterface:
+    alias: ViewMend\Typo3SiteTracker\Transport\ViewMendSdkTransport
+
+  ViewMend\Typo3SiteTracker\Transport\ViewMendClientFactoryInterface:
+    alias: ViewMend\Typo3SiteTracker\Transport\ProductionViewMendClientFactory
+
+  ViewMend\Typo3SiteTracker\Hook\DataHandlerHook:
+    public: true
+
+  ViewMend\Typo3SiteTracker\Controller\ModuleController:
+    public: true
+
+  ViewMend\Typo3SiteTracker\Command\DeploymentMarkerCommand:
+    tags:
+      - name: 'console.command'
+        command: 'viewmend:deployment'
+        description: 'Queue an explicit ViewMend deployment marker.'
+        schedulable: false
+
+  ViewMend\Typo3SiteTracker\Command\ProcessQueueCommand:
+    tags:
+      - name: 'console.command'
+        command: 'viewmend:process'
+        description: 'Reconcile scheduled visibility changes and process ViewMend deliveries.'
+        schedulable: true
+
+  ViewMend\Typo3SiteTracker\Command\StatusCommand:
+    tags:
+      - name: 'console.command'
+        command: 'viewmend:status'
+        description: 'Show ViewMend Site Tracker readiness and delivery counts.'
+        schedulable: false
+
+  ViewMend\Typo3SiteTracker\Command\RetryDeliveryCommand:
+    tags:
+      - name: 'console.command'
+        command: 'viewmend:retry'
+        description: 'Reset a permanently failed ViewMend delivery.'
+        schedulable: false
