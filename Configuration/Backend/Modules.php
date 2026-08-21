@@ -28,10 +28,11 @@ use ViewMend\Typo3SiteTracker\Controller\ModuleController;
 
 return [
     'tools_viewmendtracker' => [
-        'parent' => 'tools',
+        'parent' => 'viewmend',
+        'position' => ['after' => 'viewmend_dashboard'],
         'access' => 'systemMaintainer',
-        'path' => '/module/tools/viewmend-site-tracker',
-        'iconIdentifier' => 'viewmend-site-tracker-module',
+        'path' => '/module/viewmend/site-tracker',
+        'iconIdentifier' => 'viewmend-product-site-tracker',
         'labels' => 'LLL:EXT:viewmend_site_tracker/Resources/Private/Language/locallang_mod.xlf',
         'routes' => [
             '_default' => [

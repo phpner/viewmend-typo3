@@ -4,6 +4,17 @@ All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-08-21
+
+### Added
+
+- Registered Site Tracker with the shared ViewMend product Dashboard, including connection and delivery health metrics.
+
+### Changed
+
+- Moved the backend module under **ViewMend → Site Tracker** while preserving its stable module identifier and access rules.
+- Added `viewmend/typo3-core` as the shared Dashboard and navigation dependency.
+
 ## [1.0.1] - 2026-08-18
 
 ### Changed

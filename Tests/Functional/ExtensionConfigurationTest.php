@@ -34,6 +34,9 @@ final class ExtensionConfigurationTest extends TestCase
     {
         $modules = require dirname(__DIR__, 2) . '/Configuration/Backend/Modules.php';
         $module = $modules['tools_viewmendtracker'];
+        self::assertSame('viewmend', $module['parent']);
+        self::assertSame('/module/viewmend/site-tracker', $module['path']);
+        self::assertSame('viewmend-product-site-tracker', $module['iconIdentifier']);
         self::assertSame('systemMaintainer', $module['access']);
         self::assertSame(['GET'], $module['routes']['_default']['methods']);
         self::assertSame(['POST'], $module['routes']['connection-save']['methods']);
@@ -50,5 +53,13 @@ final class ExtensionConfigurationTest extends TestCase
         self::assertStringContainsString("command: 'viewmend:deployment'", $services);
         self::assertMatchesRegularExpression("/viewmend:process'[\\s\\S]+schedulable: true/", $services);
         self::assertMatchesRegularExpression("/viewmend:deployment'[\\s\\S]+schedulable: false/", $services);
+    }
+
+    public function testProductProviderIsRegisteredWithViewMendCore(): void
+    {
+        $services = file_get_contents(dirname(__DIR__, 2) . '/Configuration/Services.yaml');
+        self::assertIsString($services);
+        self::assertStringContainsString('SiteTrackerProductProvider:', $services);
+        self::assertStringContainsString('name: viewmend.product', $services);
     }
 }

@@ -10,6 +10,7 @@ ViewMend Site Tracker for TYPO3 is the official extension for [TYPO3 website cha
 |---|---|
 | TYPO3 | 13.4 LTS and 14.3 |
 | PHP | 8.3, 8.4 and 8.5 |
+| ViewMend TYPO3 Core | `viewmend/typo3-core` 1.x |
 | ViewMend SDK | `viewmend/sdk` 1.x |
 | Database | MariaDB is the end-to-end and CI target; SQLite is used for focused repository tests |
 
@@ -22,7 +23,7 @@ composer require viewmend/typo3-site-tracker:^1.0
 vendor/bin/typo3 extension:setup
 ```
 
-Then open **Admin Tools > ViewMend Site Tracker**, select **Connection**, and save the Integration ID, public TYPO3 site, environment and API token. Select **Save + queue test event** to create a real local custom event; the form does not wait for the network.
+Composer installs ViewMend TYPO3 Core automatically. Then open **ViewMend > Site Tracker**, select **Connection**, and save the Integration ID, public TYPO3 site, environment and API token. Select **Save + queue test event** to create a real local custom event; the form does not wait for the network.
 
 Run the worker every minute:
 
@@ -149,7 +150,7 @@ Errors are length-bounded and redacted before they reach delivery history, opera
 
 ## Installation details
 
-1. Require the Composer package.
+1. Require the Composer package; its shared ViewMend Dashboard dependency is installed automatically.
 2. Run `vendor/bin/typo3 extension:setup` or the database schema analyser so the four `tx_viewmendsitetracker_*` tables exist.
 3. Confirm that the TYPO3 site has an absolute public base URL and working routing for every enabled language.
 4. Configure Connection, then Event rules.

@@ -52,6 +52,10 @@ services:
   ViewMend\Typo3SiteTracker\Controller\ModuleController:
     public: true
 
+  ViewMend\Typo3SiteTracker\Integration\ViewMend\SiteTrackerProductProvider:
+    tags:
+      - name: viewmend.product
+
   ViewMend\Typo3SiteTracker\Command\DeploymentMarkerCommand:
     tags:
       - name: 'console.command'

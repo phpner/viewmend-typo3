@@ -31,11 +31,12 @@ $EM_CONF[$_EXTKEY] = [
     'author_company' => 'ViewMend',
     'state' => 'stable',
     'clearCacheOnLoad' => false,
-    'version' => '1.0.1',
+    'version' => '1.1.0',
     'constraints' => [
         'depends' => [
             'php' => '8.3.0-8.5.99',
             'typo3' => '13.4.0-14.3.99',
+            'viewmend_core' => '1.0.0-1.99.99',
         ],
         'conflicts' => [],
         'suggests' => [],

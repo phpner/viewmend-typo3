@@ -31,7 +31,8 @@ attempt and observation tables using ``ext_tables.sql``.
 Initial setup
 -------------
 
-Open :guilabel:`Admin Tools > ViewMend Site Tracker` as a system maintainer.
+Composer installs the shared ViewMend Dashboard automatically. Open
+:guilabel:`ViewMend > Site Tracker` as a system maintainer.
 Configure the Connection first, then Event rules. Queue a test event and run
 the worker once. A successful test ends in ``accepted`` or ``duplicate``.
 

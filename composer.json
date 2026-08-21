@@ -43,7 +43,8 @@
         "typo3/cms-reports": "^13.4 || ^14.3",
         "typo3/cms-scheduler": "^13.4 || ^14.3",
         "typo3/cms-workspaces": "^13.4 || ^14.3",
-        "viewmend/sdk": "^1.0"
+        "viewmend/sdk": "^1.0",
+        "viewmend/typo3-core": "^1.0"
     },
     "require-dev": {
         "phpstan/phpstan": "^2.1",
@@ -74,7 +75,7 @@
     "extra": {
         "typo3/cms": {
             "extension-key": "viewmend_site_tracker",
-            "version": "1.0.1",
+            "version": "1.1.0",
             "Package": {
                 "providesPackages": []
             }

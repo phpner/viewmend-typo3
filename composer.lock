@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3ae7e46884e53d7b6995a0245e538e22",
+    "content-hash": "5431778ce3e92b5c8968e21d7447c308",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -6618,6 +6618,71 @@
                 "source": "https://github.com/phpner/viewmend-php"
             },
             "time": "2026-08-16T16:15:07+00:00"
+        },
+        {
+            "name": "viewmend/typo3-core",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phpner/viewmend-typo3-core.git",
+                "reference": "5d547c0138ce22e8b661ebf224d5715b38cd4231"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phpner/viewmend-typo3-core/zipball/5d547c0138ce22e8b661ebf224d5715b38cd4231",
+                "reference": "5d547c0138ce22e8b661ebf224d5715b38cd4231",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2 <8.6",
+                "typo3/cms-backend": "~13.4.0 || ~14.3.0",
+                "typo3/cms-core": "~13.4.0 || ~14.3.0",
+                "typo3/cms-extbase": "~13.4.0 || ~14.3.0",
+                "typo3/cms-fluid": "~13.4.0 || ~14.3.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.87",
+                "phpstan/phpstan": "^2.1",
+                "phpunit/phpunit": "^11.5"
+            },
+            "type": "typo3-cms-extension",
+            "extra": {
+                "typo3/cms": {
+                    "extension-key": "viewmend_core"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "ViewMend\\Typo3Core\\": "Classes/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "ViewMend",
+                    "email": "support@viewmend.com",
+                    "homepage": "https://viewmend.com/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Shared TYPO3 backend shell and product registry for ViewMend extensions.",
+            "homepage": "https://viewmend.com/",
+            "keywords": [
+                "dashboard",
+                "extension-ecosystem",
+                "product-registry",
+                "typo3",
+                "viewmend"
+            ],
+            "support": {
+                "email": "support@viewmend.com",
+                "issues": "https://github.com/phpner/viewmend-typo3-core/issues",
+                "source": "https://github.com/phpner/viewmend-typo3-core"
+            },
+            "time": "2026-08-20T18:24:49+00:00"
         },
         {
             "name": "webmozart/assert",
