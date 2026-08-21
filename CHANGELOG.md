@@ -4,11 +4,6 @@ All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.
 
 ## [Unreleased]
 
-### Changed
-
-- Keep Composer support aligned with the tested TYPO3 13.4 and 14.3 release
-  lines and exclude development infrastructure from distribution archives.
-
 ## [1.1.0] - 2026-08-21
 
 ### Added
@@ -19,6 +14,8 @@ All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.
 
 - Moved the backend module under **ViewMend → Site Tracker** while preserving its stable module identifier and access rules.
 - Added `viewmend/typo3-core` as the shared Dashboard and navigation dependency.
+- Kept Composer support aligned with the tested TYPO3 13.4 and 14.3 release
+  lines and excluded development infrastructure from distribution archives.
 
 ## [1.0.1] - 2026-08-18
 
