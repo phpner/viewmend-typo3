@@ -76,10 +76,6 @@ final readonly class ConfigurationResolver
             recordUnpublish: (bool) ($raw['record_unpublish'] ?? true),
             recordDelete: (bool) ($raw['record_delete'] ?? true),
             recordCacheFlush: (bool) ($raw['record_cache_flush'] ?? false),
-            allowedPageTypes: $this->integerList(ScalarValue::string($raw['allowed_page_types'] ?? null, '1')),
-            allowedContentTypes: $this->stringList(
-                ScalarValue::string($raw['allowed_content_types'] ?? null, 'text,textmedia,image'),
-            ),
             retentionDays: max(1, min(365, ScalarValue::int($raw['retention_days'] ?? null, 30))),
         );
     }
@@ -89,23 +85,5 @@ final readonly class ConfigurationResolver
         $value = getenv($name);
 
         return is_string($value) && trim($value) !== '' ? trim($value) : null;
-    }
-
-    /** @return list<int> */
-    private function integerList(string $value): array
-    {
-        return array_values(array_unique(array_map(
-            'intval',
-            array_filter(array_map('trim', explode(',', $value)), static fn (string $item): bool => ctype_digit($item)),
-        )));
-    }
-
-    /** @return list<string> */
-    private function stringList(string $value): array
-    {
-        return array_values(array_unique(array_filter(
-            array_map('trim', explode(',', $value)),
-            static fn (string $item): bool => $item !== '' && preg_match('/^[A-Za-z0-9_-]{1,80}$/D', $item) === 1,
-        )));
     }
 }

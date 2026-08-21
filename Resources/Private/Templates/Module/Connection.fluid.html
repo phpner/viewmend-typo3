@@ -2,7 +2,7 @@
 <f:layout name="Module" />
 <f:section name="Content">
     <h1>Connection</h1>
-    <p class="lead">Bind one ViewMend integration to one canonical TYPO3 site.</p>
+    <p class="lead">Connect Site Tracker to this TYPO3 installation.</p>
     <f:render partial="Module/Navigation" arguments="{_all}" />
 
     <form method="post" action="{saveUri}" class="card">
@@ -12,23 +12,25 @@
                 <input class="form-control" id="viewmend-integration" name="viewmend[integration_id]" value="{configuration.integrationId}" maxlength="255" required autocomplete="off">
                 <div class="form-text">Use the Integration ID from ViewMend Site Tracker.</div>
             </div>
-            <div class="mb-3">
-                <label class="form-label" for="viewmend-api-base">Production API base</label>
-                <input class="form-control" id="viewmend-api-base" value="{apiBase}" readonly aria-readonly="true">
-                <div class="form-text">Fixed by the official SDK and not editable.</div>
-            </div>
-            <div class="mb-3">
-                <label class="form-label" for="viewmend-site">Public TYPO3 site</label>
-                <select class="form-select" id="viewmend-site" name="viewmend[site_identifier]" required>
-                    <option value="">Choose a site</option>
-                    <f:for each="{sites}" as="site"><option value="{site.identifier}" <f:if condition="{site.selected}">selected</f:if>>{site.identifier} — {site.base}</option></f:for>
-                </select>
-                <div class="form-text">The base URL is read from TYPO3 site configuration. Events from other sites are never mixed into this binding.</div>
-            </div>
-            <div class="mb-3">
-                <label class="form-label" for="viewmend-environment">Environment</label>
-                <input class="form-control" id="viewmend-environment" name="viewmend[environment]" value="{configuration.environment}" maxlength="60" pattern="[A-Za-z0-9._-]+" required>
-            </div>
+            <f:if condition="{singleSite}">
+                <f:then>
+                    <input type="hidden" name="viewmend[site_identifier]" value="{selectedSite.identifier}">
+                    <div class="alert alert-secondary mb-3" role="note">
+                        <strong>Site:</strong> {selectedSite.base}
+                        <div class="small mt-1">Detected automatically from TYPO3.</div>
+                    </div>
+                </f:then>
+                <f:else>
+                    <div class="mb-3">
+                        <label class="form-label" for="viewmend-site">Which site should be monitored?</label>
+                        <select class="form-select" id="viewmend-site" name="viewmend[site_identifier]" required>
+                            <option value="">Choose a site</option>
+                            <f:for each="{sites}" as="site"><option value="{site.identifier}" <f:if condition="{site.selected}">selected</f:if>>{site.identifier} — {site.base}</option></f:for>
+                        </select>
+                        <div class="form-text">This connection monitors only the selected TYPO3 site.</div>
+                    </div>
+                </f:else>
+            </f:if>
             <div class="mb-3">
                 <label class="form-label" for="viewmend-token">API token</label>
                 <input class="form-control" id="viewmend-token" type="password" name="viewmend[api_token]" value="" maxlength="4096" autocomplete="new-password" <f:if condition="{environmentToken}">disabled</f:if>>
@@ -36,6 +38,16 @@
                     <f:if condition="{environmentToken}"><f:then>Provided by <code>VIEWMEND_API_TOKEN</code>; backend input is disabled.</f:then><f:else><f:if condition="{hasStoredToken}"><f:then>An encrypted token is stored. Leave blank to keep it; it is never shown again.</f:then><f:else>Prefer <code>VIEWMEND_API_TOKEN</code>. A submitted token is encrypted with the TYPO3 system encryption key.</f:else></f:if></f:else></f:if>
                 </div>
             </div>
+            <details class="border rounded p-3">
+                <summary class="fw-semibold">Advanced settings</summary>
+                <div class="mt-3">
+                    <label class="form-label" for="viewmend-environment">Environment</label>
+                    <select class="form-select" id="viewmend-environment" name="viewmend[environment]" required>
+                        <f:for each="{environmentChoices}" as="environment"><option value="{environment.value}" <f:if condition="{environment.selected}">selected</f:if>>{environment.label}</option></f:for>
+                    </select>
+                    <div class="form-text">Use Staging or Development only when this TYPO3 installation is not the live website.</div>
+                </div>
+            </details>
         </div>
         <div class="card-footer d-flex flex-wrap gap-2">
             <button class="btn btn-default" type="submit" name="viewmend[submit_action]" value="save">Save</button>

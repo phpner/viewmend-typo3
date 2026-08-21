@@ -24,13 +24,6 @@
             </div>
         </div>
         <div class="card mb-3">
-            <div class="card-header"><strong>Allowed public record types</strong></div>
-            <div class="card-body">
-                <div class="mb-3"><label class="form-label" for="page-types">Page doktypes</label><input class="form-control" id="page-types" name="viewmend[allowed_page_types]" value="{allowedPageTypes}" required><div class="form-text">Comma-separated numeric TYPO3 page types. Default public page type: 1.</div></div>
-                <div><label class="form-label" for="content-types">Content element CTypes</label><input class="form-control" id="content-types" name="viewmend[allowed_content_types]" value="{allowedContentTypes}" required><div class="form-text">Comma-separated identifiers. Drafts, workspace records and access-restricted elements are excluded independently.</div></div>
-            </div>
-        </div>
-        <div class="card mb-3">
             <div class="card-header"><strong>Site operations and retention</strong></div>
             <div class="card-body">
                 <div class="form-check mb-3"><input class="form-check-input" id="rule-cache" type="checkbox" name="viewmend[record_cache_flush]" value="1" <f:if condition="{configuration.recordCacheFlush}">checked</f:if>><label class="form-check-label" for="rule-cache">Queue a marker after a full TYPO3 cache flush</label></div>

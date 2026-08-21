@@ -80,8 +80,6 @@ final class ScenarioCommand extends Command
             'record_unpublish' => 1,
             'record_delete' => 1,
             'record_cache_flush' => 1,
-            'allowed_page_types' => '1',
-            'allowed_content_types' => 'text,textmedia,image',
             'retention_days' => 30,
         ]);
 

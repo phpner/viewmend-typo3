@@ -51,7 +51,6 @@ use ViewMend\Typo3SiteTracker\Support\ClockInterface;
 use ViewMend\Typo3SiteTracker\Support\EventIdFactory;
 use ViewMend\Typo3SiteTracker\Support\Redactor;
 use ViewMend\Typo3SiteTracker\Support\ScalarValue;
-use ViewMend\ViewMend;
 
 final readonly class ModuleController
 {
@@ -116,12 +115,24 @@ final readonly class ModuleController
                 'selected' => $site->getIdentifier() === $configuration->siteIdentifier,
             ];
         }
+        if (count($sites) === 1 && $configuration->siteIdentifier === '') {
+            $sites[0]['selected'] = true;
+        }
+        $selectedSite = null;
+        foreach ($sites as $site) {
+            if ($site['selected']) {
+                $selectedSite = $site;
+                break;
+            }
+        }
         $environmentToken = getenv('VIEWMEND_API_TOKEN');
 
         return $this->render($request, 'Connection', 'connection', [
             'configuration' => $configuration,
             'sites' => $sites,
-            'apiBase' => ViewMend::PRODUCTION_API_BASE_URL,
+            'singleSite' => count($sites) === 1,
+            'selectedSite' => $selectedSite,
+            'environmentChoices' => $this->environmentChoices($configuration->environment),
             'hasStoredToken' => is_string($raw['token_ciphertext'] ?? null) && $raw['token_ciphertext'] !== '',
             'environmentToken' => is_string($environmentToken) && trim($environmentToken) !== '',
             'saveUri' => $this->uri(self::MODULE . '.connection-save'),
@@ -167,8 +178,6 @@ final readonly class ModuleController
         $configuration = $this->configuration->resolve();
         return $this->render($request, 'Rules', 'rules', [
             'configuration' => $configuration,
-            'allowedPageTypes' => implode(',', $configuration->allowedPageTypes),
-            'allowedContentTypes' => implode(',', $configuration->allowedContentTypes),
             'saveUri' => $this->uri(self::MODULE . '.rules-save'),
         ]);
     }
@@ -177,15 +186,11 @@ final readonly class ModuleController
     {
         try {
             $form = $this->form($request);
-            $pageTypes = $this->csvIntegers($this->stringInput($form['allowed_page_types'] ?? null));
-            $contentTypes = $this->csvIdentifiers($this->stringInput($form['allowed_content_types'] ?? null));
             $retention = filter_var($form['retention_days'] ?? null, FILTER_VALIDATE_INT, [
                 'options' => ['min_range' => 1, 'max_range' => 365],
             ]);
-            if ($pageTypes === [] || $contentTypes === [] || $retention === false) {
-                throw new InvalidArgumentException(
-                    'Page types, content types and retention must contain valid values.',
-                );
+            if ($retention === false) {
+                throw new InvalidArgumentException('Retention must contain a value from 1 to 365 days.');
             }
             $this->settings->save([
                 'enabled' => isset($form['enabled']) ? 1 : 0,
@@ -196,8 +201,6 @@ final readonly class ModuleController
                 'record_unpublish' => isset($form['record_unpublish']) ? 1 : 0,
                 'record_delete' => isset($form['record_delete']) ? 1 : 0,
                 'record_cache_flush' => isset($form['record_cache_flush']) ? 1 : 0,
-                'allowed_page_types' => implode(',', $pageTypes),
-                'allowed_content_types' => implode(',', $contentTypes),
                 'retention_days' => $retention,
             ]);
 
@@ -413,22 +416,28 @@ final readonly class ModuleController
         }
     }
 
-    /** @return list<int> */
-    private function csvIntegers(string $value): array
+    /** @return list<array{value: string, label: string, selected: bool}> */
+    private function environmentChoices(string $selected): array
     {
-        return array_values(array_unique(array_map('intval', array_filter(
-            array_map('trim', explode(',', $value)),
-            static fn (string $item): bool => ctype_digit($item),
-        ))));
-    }
+        $choices = [
+            'production' => 'Production',
+            'staging' => 'Staging',
+            'development' => 'Development',
+        ];
+        if ($selected !== '' && !isset($choices[$selected])) {
+            $choices[$selected] = $selected;
+        }
 
-    /** @return list<string> */
-    private function csvIdentifiers(string $value): array
-    {
-        return array_values(array_unique(array_filter(
-            array_map('trim', explode(',', $value)),
-            static fn (string $item): bool => preg_match('/^[A-Za-z0-9_-]{1,80}$/D', $item) === 1,
-        )));
+        $result = [];
+        foreach ($choices as $value => $label) {
+            $result[] = [
+                'value' => $value,
+                'label' => $label,
+                'selected' => $value === $selected,
+            ];
+        }
+
+        return $result;
     }
 
     /** @return list<string> */

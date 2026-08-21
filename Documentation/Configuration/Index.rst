@@ -9,8 +9,8 @@ Connection
 ----------
 
 The module binds one ViewMend integration to one TYPO3 site identifier and its
-canonical configured base URL. The API base is fixed to
-``https://viewmend.com/api/v1`` by ``viewmend/sdk``.
+canonical configured base URL. A single configured TYPO3 site is selected
+automatically. Installations with multiple sites must choose the site to monitor.
 
 The preferred token source is the environment:
 
@@ -29,9 +29,10 @@ Event rules
 -----------
 
 Rules independently control page/content tracking, publish, update, unpublish,
-delete and full-cache-flush events. Allowed ``doktype`` and ``CType`` lists
-limit public record types. Retention is 1 to 365 days and applies only to
-successfully delivered history.
+delete and full-cache-flush events. Site Tracker follows standard public pages
+and all anonymously visible content elements; drafts, workspaces and restricted
+records are excluded automatically. Retention is 1 to 365 days and applies only
+to successfully delivered history.
 
 The cache-flush rule is disabled by default. It recognises only a confirmed
 flush containing TYPO3's complete registered cache-group set, never a partial

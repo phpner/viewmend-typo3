@@ -23,7 +23,7 @@ composer require viewmend/typo3-site-tracker:^1.0
 vendor/bin/typo3 extension:setup
 ```
 
-Composer installs ViewMend TYPO3 Core automatically. Then open **ViewMend > Site Tracker**, select **Connection**, and save the Integration ID, public TYPO3 site, environment and API token. Select **Save + queue test event** to create a real local custom event; the form does not wait for the network.
+Composer installs ViewMend TYPO3 Core automatically. Then open **ViewMend > Site Tracker**, select **Connection**, and save the Integration ID and API token. A single TYPO3 site is selected automatically; installations with multiple sites must choose which site to monitor. The environment defaults to Production and is available under **Advanced settings**. Select **Save + queue test event** to create a real local custom event; the form does not wait for the network.
 
 Run the worker every minute:
 

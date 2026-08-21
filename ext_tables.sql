@@ -13,8 +13,6 @@ CREATE TABLE tx_viewmendsitetracker_settings (
     record_unpublish smallint unsigned NOT NULL DEFAULT 1,
     record_delete smallint unsigned NOT NULL DEFAULT 1,
     record_cache_flush smallint unsigned NOT NULL DEFAULT 0,
-    allowed_page_types varchar(255) NOT NULL DEFAULT '1',
-    allowed_content_types text,
     retention_days int unsigned NOT NULL DEFAULT 30,
     last_worker_at bigint unsigned NOT NULL DEFAULT 0,
     last_worker_summary varchar(500) NOT NULL DEFAULT '',

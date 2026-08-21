@@ -40,6 +40,8 @@ final readonly class Typo3PublicRecordResolver implements PublicRecordResolverIn
 {
     private const SUPPORTED_TABLES = ['pages', 'tt_content'];
 
+    private const PUBLIC_PAGE_TYPES = [1];
+
     private const FINGERPRINT_EXCLUDED_FIELDS = [
         'uid',
         'pid',
@@ -132,16 +134,10 @@ final readonly class Typo3PublicRecordResolver implements PublicRecordResolverIn
 
         if ($table === 'pages') {
             $public = $public
-                && in_array(ScalarValue::int($row['doktype'] ?? null), $configuration->allowedPageTypes, true)
+                && in_array(ScalarValue::int($row['doktype'] ?? null), self::PUBLIC_PAGE_TYPES, true)
                 && $this->eligibility->isPublic($row, $now);
         } else {
-            $public = $public
-                && in_array(
-                    ScalarValue::string($row['CType'] ?? null),
-                    $configuration->allowedContentTypes,
-                    true,
-                )
-                && $this->eligibility->isPublic($row, $now);
+            $public = $public && $this->eligibility->isPublic($row, $now);
         }
 
         return new ResolvedPublicRecord(
@@ -180,7 +176,7 @@ final readonly class Typo3PublicRecordResolver implements PublicRecordResolverIn
             if (
                 !in_array(
                     ScalarValue::int($page['doktype'] ?? null),
-                    $configuration->allowedPageTypes,
+                    self::PUBLIC_PAGE_TYPES,
                     true,
                 )
             ) {

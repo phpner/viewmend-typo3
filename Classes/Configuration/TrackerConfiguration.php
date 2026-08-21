@@ -28,10 +28,6 @@ namespace ViewMend\Typo3SiteTracker\Configuration;
 
 final readonly class TrackerConfiguration
 {
-    /**
-     * @param list<int> $allowedPageTypes
-     * @param list<string> $allowedContentTypes
-     */
     public function __construct(
         public bool $enabled,
         public string $integrationId,
@@ -48,8 +44,6 @@ final readonly class TrackerConfiguration
         public bool $recordUnpublish,
         public bool $recordDelete,
         public bool $recordCacheFlush,
-        public array $allowedPageTypes,
-        public array $allowedContentTypes,
         public int $retentionDays,
     ) {
     }
