@@ -324,6 +324,10 @@ final readonly class ModuleController
         $query = $request->getQueryParams();
         $moduleTemplate = $this->moduleTemplateFactory->create($request);
         $moduleTemplate->setTitle('ViewMend Site Tracker');
+        $docHeader = $moduleTemplate->getDocHeaderComponent();
+        if (method_exists($docHeader, 'disableAutomaticReloadButton')) {
+            $docHeader->disableAutomaticReloadButton();
+        }
         $moduleTemplate->assignMultiple(array_merge($variables, [
             'active' => $active,
             'overviewUri' => $this->uri(self::MODULE),
