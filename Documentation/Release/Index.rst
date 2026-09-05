@@ -20,3 +20,14 @@ Before a maintainer publishes:
 
 The public package must not claim PostgreSQL or a TYPO3 branch until that
 combination is present in the automated test matrix.
+
+Create a local installable archive with:
+
+..  code-block:: bash
+
+    python3 Scripts/package-release.py
+
+The archive and its SHA-256 checksum are written to ``build/release``.
+Packaging checks the version metadata and the allowed runtime/documentation
+files. Tests, local containers, dependencies and hidden development files are
+excluded. Building an archive does not create a tag or publish a release.

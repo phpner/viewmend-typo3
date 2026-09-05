@@ -83,10 +83,10 @@ final class ScenarioCommand extends Command
             'retention_days' => 30,
         ]);
 
-        $this->queueOperationalEvent('e2e-accepted', EventType::Custom);
-        $this->queueOperationalEvent('e2e-duplicate', EventType::Deployment);
-        $this->queueOperationalEvent('e2e-permanent', EventType::Custom);
-        $this->queueOperationalEvent('e2e-retry', EventType::Custom);
+        $this->queueOperationalEvent('e2e-accepted', EventType::Custom, (string) $site->getBase());
+        $this->queueOperationalEvent('e2e-duplicate', EventType::Deployment, (string) $site->getBase());
+        $this->queueOperationalEvent('e2e-permanent', EventType::Custom, (string) $site->getBase());
+        $this->queueOperationalEvent('e2e-retry', EventType::Custom, (string) $site->getBase());
         $this->exercisePageLifecycle($site->getRootPageId());
 
         $report = $this->worker->process(100);
@@ -119,14 +119,14 @@ final class ScenarioCommand extends Command
         return Command::SUCCESS;
     }
 
-    private function queueOperationalEvent(string $eventId, EventType $type): void
+    private function queueOperationalEvent(string $eventId, EventType $type, string $siteUrl): void
     {
         $this->events->record(new OutgoingEvent(
             eventId: $eventId,
             type: $type,
             title: 'TYPO3 E2E operational event',
             occurredAt: $this->clock->now(),
-            siteUrl: 'http://127.0.0.1:8088/',
+            siteUrl: $siteUrl,
             pageUrls: [],
             environment: 'testing',
             changedFields: ['metadata'],

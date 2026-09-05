@@ -75,7 +75,15 @@ interface DeliveryRepositoryInterface
     public function counts(?string $siteIdentifier = null): array;
 
     /** @return list<array<string, mixed>> */
-    public function findRecent(?DeliveryStatus $status, ?string $siteIdentifier, int $limit = 100): array;
+    public function findRecent(
+        ?DeliveryStatus $status,
+        ?string $siteIdentifier,
+        int $limit = 100,
+        int $offset = 0,
+        string $search = ''
+    ): array;
+
+    public function countRecent(?DeliveryStatus $status, ?string $siteIdentifier, string $search = ''): int;
 
     /** @return list<array<string, mixed>> */
     public function attempts(int $deliveryUid): array;

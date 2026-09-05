@@ -16,3 +16,6 @@ services:
         command: 'viewmend-e2e:scenario'
         description: 'Run the isolated ViewMend Site Tracker end-to-end scenario.'
         schedulable: false
+
+  ViewMend\Typo3SiteTracker\Backend\Dashboard\DashboardHttpTransport:
+    alias: ViewMend\Typo3SiteTrackerE2E\TestDashboardHttpTransport

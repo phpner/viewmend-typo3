@@ -40,6 +40,7 @@ The extension is designed for TYPO3 13.4 and 14.3 on PHP 8.3 through 8.5.
 
     Installation/Index
     Configuration/Index
+    Dashboard/Index
     Events/Index
     Operations/Index
     Privacy/Index

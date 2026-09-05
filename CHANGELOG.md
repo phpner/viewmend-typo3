@@ -4,6 +4,22 @@ All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-09-05
+
+### Added
+
+- A ViewMend monitoring dashboard with page/device selection, health metrics, searchable findings, duplicate grouping, issue trends, performance metrics and chart data tables.
+- Changed-resource details, transfer composition and on-demand stored-request inventories with search.
+- Activity search and pagination, affected URLs, server event identifiers and structured delivery response details.
+- Connection setup guidance, unsaved-change feedback and duplicate-submission protection.
+
+### Changed
+
+- Cache dashboard responses for five minutes, isolate cached data by credentials and make current API authentication errors override cached results.
+- Keep module rendering compatible with TYPO3 13.4 with shared template filenames and conditional automatic reload controls.
+- Retry malformed event acknowledgements with the original event ID and bounded backoff.
+- Exclude development files from source and Composer archives; validate release contents and metadata during packaging.
+
 ## [1.1.0] - 2026-08-21
 
 ### Added

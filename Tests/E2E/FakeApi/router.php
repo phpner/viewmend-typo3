@@ -25,6 +25,10 @@
 declare(strict_types=1);
 
 $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && is_string($path)) {
+    require __DIR__ . '/dashboard.php';
+    return;
+}
 if (
     $_SERVER['REQUEST_METHOD'] !== 'POST'
     || !is_string($path)
@@ -67,7 +71,7 @@ header('X-ViewMend-Delivery: ' . $deliveryId);
 echo json_encode([
     'ok' => true,
     'delivery_id' => $deliveryId,
-    'event_id' => $eventId,
+    'event_id' => 'server-' . $eventId,
     'duplicate' => $duplicate,
     'affected_pages' => 1,
     'ignored_urls' => 0,

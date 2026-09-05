@@ -1,0 +1,16 @@
+<div class="viewmend-chart" data-viewmend-chart data-points="{chart.points}">
+    <f:if condition="{chart.available}">
+        <f:then>
+            <svg viewBox="0 0 360 180" role="img" aria-label="{label}">
+                <f:for each="{chart.ticks}" as="tick"><line class="viewmend-chart-grid" x1="55" x2="330" y1="{tick.y}" y2="{tick.y}"/><text class="viewmend-chart-label" x="50" y="{tick.y}" text-anchor="end">{tick.label}</text></f:for>
+                <f:if condition="{chart.threshold_y}"><line class="viewmend-chart-threshold" x1="55" x2="330" y1="{chart.threshold_y}" y2="{chart.threshold_y}"/></f:if>
+                <f:for each="{chart.lines}" as="line"><path d="{line.path}" fill="none" stroke-width="2.3" stroke-linejoin="round" stroke-linecap="round" class="viewmend-stroke-{line.color}"/></f:for>
+                <line class="viewmend-chart-guide" data-chart-guide x1="330" x2="330" y1="15" y2="150" hidden/>
+            </svg>
+            <div class="viewmend-chart-legend"><f:for each="{chart.series}" as="series"><span class="viewmend-legend-key viewmend-color-{series.color}">{series.label}</span></f:for></div>
+            <div class="viewmend-chart-inspection" data-viewmend-enhance hidden><label>Inspect a check<input type="range" min="0" max="{chart.last_index}" value="{chart.last_index}" data-chart-range aria-label="Inspect a check: {label}"></label><output data-chart-output aria-live="polite"></output></div>
+            <details class="viewmend-chart-data"><summary>View chart data</summary><div class="viewmend-table-scroll" tabindex="0" aria-label="Chart data: {label}"><table class="table"><thead><tr><th scope="col">Check</th><f:for each="{chart.series}" as="series"><th scope="col">{series.label}</th></f:for></tr></thead><tbody><f:for each="{chart.rows}" as="row"><tr><td>{row.date}</td><f:for each="{row.values}" as="value"><td>{value}</td></f:for></tr></f:for></tbody></table></div></details>
+        </f:then>
+        <f:else><p class="viewmend-chart-empty">History appears after two completed checks.</p></f:else>
+    </f:if>
+</div>

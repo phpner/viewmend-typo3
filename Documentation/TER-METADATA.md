@@ -8,7 +8,7 @@ Trigger ViewMend Site Tracker checks after TYPO3 content updates and deployments
 
 ViewMend is a website quality and operations platform. This extension connects TYPO3 to Site Tracker so teams can see whether content updates or deployments introduced unexpected website changes. It records public page and content lifecycle events plus explicit deployment markers, stores them locally, then sends them asynchronously through the official ViewMend SDK.
 
-It understands TYPO3 workspaces, translations, scheduled visibility and multisite bindings. The native backend module provides connection setup, event rules, operational readiness and delivery Activity with retry/run/cancel actions. Tokens are environment-backed or write-only encrypted values; content bodies, editor data, cookies and request payloads are never sent.
+It understands TYPO3 workspaces, translations, scheduled visibility and multisite bindings. The native backend module provides connection setup, event rules, site health, findings, performance and resource history, plus searchable delivery Activity with retry/run/cancel actions. Tokens are environment-backed or write-only encrypted values; content bodies, editor data, cookies and request payloads are never sent.
 
 ## Search terms
 

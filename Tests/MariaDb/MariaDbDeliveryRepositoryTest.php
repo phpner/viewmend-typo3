@@ -127,6 +127,26 @@ final class MariaDbDeliveryRepositoryTest extends TestCase
         );
     }
 
+    public function testSearchEscapesWildcardsAndPaginatesWithinTheSite(): void
+    {
+        for ($index = 0; $index < 3; $index++) {
+            $this->repository->enqueue(new OutgoingEvent(
+                eventId: 'search-' . $index,
+                type: EventType::Custom,
+                title: 'Price 50%_off',
+                occurredAt: $this->clock->now(),
+                siteUrl: 'https://example.com/',
+                pageUrls: ['https://example.com/catalog/item'],
+                environment: 'production',
+            ), $index === 2 ? 'secondary' : 'main');
+        }
+        self::assertSame(2, $this->repository->countRecent(null, 'main', '%_'));
+        self::assertSame(0, $this->repository->countRecent(null, 'main', 'missing'));
+        self::assertCount(1, $this->repository->findRecent(null, 'main', 1, 1, 'catalog/item'));
+        self::assertSame(1, $this->repository->countRecent(null, 'secondary'));
+        self::assertSame(0, $this->repository->countRecent(DeliveryStatus::Accepted, 'main'));
+    }
+
     private function resetSchema(): void
     {
         $this->dropSchema();

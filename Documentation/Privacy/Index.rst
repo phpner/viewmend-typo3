@@ -19,3 +19,11 @@ stores only a safe parsed response summary, not the raw API response.
 
 See ``SECURITY.md`` for private vulnerability reporting to
 ``support@viewmend.com``.
+
+The Overview also reads monitoring data from ViewMend using the configured
+integration and token. Dashboard responses are redacted and cached for five
+minutes, with cache entries isolated by integration and credentials. Stored
+resource requests are loaded only when a maintainer opens a category; those
+responses are marked private and are not cached by the browser. Tokens and
+upstream exception bodies are never passed to JavaScript. Refreshing the
+Overview does not submit an event or start a check.

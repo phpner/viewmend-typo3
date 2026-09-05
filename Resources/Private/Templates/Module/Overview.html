@@ -2,9 +2,11 @@
 <f:layout name="Module" />
 <f:section name="Content">
     <h1>ViewMend Site Tracker</h1>
-    <p class="lead">Operational status for confirmed TYPO3 website changes and deployment markers.</p>
+    <p class="lead">Site health, findings and changes for your connected project.</p>
     <f:render partial="Module/Navigation" arguments="{_all}" />
 
+    <f:render partial="Module/Dashboard" arguments="{_all}" />
+    <details class="mt-4"><summary class="h4">Local event delivery · {waiting} waiting · {attention} need attention</summary>
     <f:if condition="{ready}">
         <f:then><div class="alert alert-success" role="status"><strong>Ready.</strong> New events are stored locally before asynchronous delivery.</div></f:then>
         <f:else>
@@ -38,5 +40,6 @@
         <div class="col-lg-6"><div class="card h-100"><div class="card-header"><strong>Connection test</strong></div><div class="card-body"><p><strong>Last queued:</strong> {lastTest}</p><p class="mb-0 text-break"><code>{lastTestEventId}</code></p></div></div></div>
     </div>
     <f:if condition="{lastError}"><div class="alert alert-danger mt-4" role="alert"><strong>Last delivery error:</strong> {lastError}</div></f:if>
+    </details>
 </f:section>
 </html>

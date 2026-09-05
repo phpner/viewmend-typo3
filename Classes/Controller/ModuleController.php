@@ -35,10 +35,16 @@ use RuntimeException;
 use Throwable;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
+use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Http\RedirectResponse;
+use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Page\JavaScriptModuleInstruction;
+use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use ViewMend\Typo3SiteTracker\Application\DeliveryWorker;
 use ViewMend\Typo3SiteTracker\Application\EventRecorder;
+use ViewMend\Typo3SiteTracker\Backend\Dashboard\DashboardClient;
+use ViewMend\Typo3SiteTracker\Backend\Dashboard\DashboardView;
 use ViewMend\Typo3SiteTracker\Configuration\ConfigurationResolver;
 use ViewMend\Typo3SiteTracker\Configuration\SecretVault;
 use ViewMend\Typo3SiteTracker\Configuration\SettingsRepositoryInterface;
@@ -69,6 +75,9 @@ final readonly class ModuleController
         private EventIdFactory $ids,
         private ClockInterface $clock,
         private Redactor $redactor,
+        private DashboardClient $dashboard,
+        private DashboardView $dashboardView,
+        private PageRenderer $pageRenderer,
     ) {
     }
 
@@ -84,7 +93,16 @@ final readonly class ModuleController
         $attention = $counts[DeliveryStatus::PermanentlyFailed->value];
         $issues = $this->readinessIssues($configuration);
 
+        $query = $request->getQueryParams();
+        $result = $this->dashboard->dashboard(
+            $this->stringInput($query['page_id'] ?? null),
+            $this->stringInput($query['device'] ?? null, 'desktop'),
+        );
+
         return $this->render($request, 'Overview', 'overview', [
+            'dashboard' => $this->dashboardView->build($result),
+            'scopeUri' => $this->uri(self::MODULE . '.overview-filter'),
+            'refreshUri' => $this->uri(self::MODULE . '.refresh'),
             'ready' => $configuration->isReady(),
             'issues' => $issues,
             'waiting' => $waiting,
@@ -101,6 +119,39 @@ final readonly class ModuleController
             'lastTestEventId' => ScalarValue::string($raw['last_test_event_id'] ?? null),
             'lastError' => ScalarValue::string($raw['last_error'] ?? null),
         ]);
+    }
+
+    public function filterOverview(ServerRequestInterface $request): ResponseInterface
+    {
+        return new RedirectResponse($this->uri(self::MODULE, $this->dashboardScope($request)));
+    }
+
+    public function refreshDashboard(ServerRequestInterface $request): ResponseInterface
+    {
+        $scope = $this->dashboardScope($request);
+        $this->dashboard->dashboard($scope['page_id'], $scope['device'], true);
+        return new RedirectResponse($this->uri(self::MODULE, $scope));
+    }
+
+    public function resources(ServerRequestInterface $request): ResponseInterface
+    {
+        $query = $request->getQueryParams();
+        $result = $this->dashboard->resources(
+            $this->stringInput($query['run_id'] ?? null),
+            $this->stringInput($query['type'] ?? null),
+            $this->stringInput($query['device'] ?? null, 'desktop'),
+        );
+        return new JsonResponse($result, 200, ['Cache-Control' => 'private, no-store']);
+    }
+
+    /** @return array{page_id: string, device: string} */
+    private function dashboardScope(ServerRequestInterface $request): array
+    {
+        $form = $this->form($request);
+        return [
+            'page_id' => $this->stringInput($form['page_id'] ?? null),
+            'device' => $this->stringInput($form['device'] ?? null, 'desktop'),
+        ];
     }
 
     public function connection(ServerRequestInterface $request): ResponseInterface
@@ -128,6 +179,7 @@ final readonly class ModuleController
         $environmentToken = getenv('VIEWMEND_API_TOKEN');
 
         return $this->render($request, 'Connection', 'connection', [
+            'authenticationFailure' => $this->dashboard->authenticationFailure(),
             'configuration' => $configuration,
             'sites' => $sites,
             'singleSite' => count($sites) === 1,
@@ -218,7 +270,12 @@ final readonly class ModuleController
             $status = DeliveryStatus::tryFrom($query['status']);
         }
         $configuration = $this->configuration->resolve();
-        $rows = $this->deliveries->findRecent($status, $configuration->siteIdentifier ?: null);
+        $search = mb_substr(trim($this->stringInput($query['search'] ?? null)), 0, 200);
+        $site = $configuration->siteIdentifier;
+        $total = $site !== '' ? $this->deliveries->countRecent($status, $site, $search) : 0;
+        $pageCount = max(1, (int) ceil($total / 25));
+        $page = min($pageCount, $this->positiveInt($query['page'] ?? null) ?? 1);
+        $rows = $site !== '' ? $this->deliveries->findRecent($status, $site, 25, ($page - 1) * 25, $search) : [];
         foreach ($rows as &$row) {
             $deliveryStatus = DeliveryStatus::tryFrom(ScalarValue::string($row['status'] ?? null));
             $row['created_label'] = $this->formatTimestamp(ScalarValue::int($row['created_at'] ?? null));
@@ -228,6 +285,8 @@ final readonly class ModuleController
             $row['can_run'] = in_array($deliveryStatus, [DeliveryStatus::Queued, DeliveryStatus::RetryScheduled], true);
             $row['detail_uri'] = $this->uri(self::MODULE . '.activity', [
                 'delivery' => ScalarValue::int($row['uid'] ?? null),
+                'search' => $search,
+                'page' => $page,
                 'status' => $status->value ?? '',
             ]);
         }
@@ -242,6 +301,37 @@ final readonly class ModuleController
                 $detail !== null
                 && ScalarValue::string($detail['site_identifier'] ?? null) === $configuration->siteIdentifier
             ) {
+                $payload = json_decode(ScalarValue::string($detail['payload'] ?? null), true);
+                $urls = is_array($payload) && is_array($payload['page_urls'] ?? null) ? $payload['page_urls'] : [];
+                $detail['page_urls'] = array_values(array_filter($urls, 'is_string'));
+                $summary = ScalarValue::string($detail['response_summary'] ?? null);
+                $metadata = json_decode($summary, true);
+                if (!is_array($metadata)) {
+                    $metadata = [];
+                    if (preg_match('/^affected=(\d+) ignored=(\d+) checks=(\d+)$/D', $summary, $matches)) {
+                        $metadata = [
+                            'affected_pages' => (int) $matches[1],
+                            'ignored_urls' => (int) $matches[2],
+                            'checks_queued' => (int) $matches[3],
+                        ];
+                    }
+                }
+                $detail['metadata'] = [];
+                $metadataLabels = [
+                    'affected_pages' => 'Matched pages',
+                    'ignored_urls' => 'Ignored URLs',
+                    'checks_queued' => 'Checks queued',
+                    'scheduled_for' => 'Scheduled for',
+                ];
+                foreach ($metadataLabels as $key => $label) {
+                    $value = $metadata[$key] ?? null;
+                    $detail['metadata'][] = [
+                        'label' => $label,
+                        'value' => is_int($value) || (is_string($value) && $value !== '')
+                            ? (string) $value
+                            : 'Unknown',
+                    ];
+                }
                 $attempts = $this->deliveries->attempts($detailUid);
                 foreach ($attempts as &$attempt) {
                     $attempt['started_label'] = $this->formatTimestamp(
@@ -257,15 +347,26 @@ final readonly class ModuleController
             }
         }
 
+        $filters = ['status' => $status->value ?? '', 'search' => $search];
         return $this->render($request, 'Activity', 'activity', [
             'rows' => $rows,
+            'search' => $search,
+            'total' => $total,
+            'page' => $page,
+            'pageCount' => $pageCount,
+            'previousUri' => $page > 1
+                ? $this->uri(self::MODULE . '.activity', $filters + ['page' => $page - 1])
+                : '',
+            'nextUri' => $page < $pageCount
+                ? $this->uri(self::MODULE . '.activity', $filters + ['page' => $page + 1])
+                : '',
             'statuses' => array_map(static fn (DeliveryStatus $item): array => [
                 'value' => $item->value,
                 'selected' => $status === $item,
             ], DeliveryStatus::cases()),
             'selectedStatus' => $status->value ?? '',
             'filterUri' => $this->uri(self::MODULE . '.activity-filter'),
-            'actionUri' => $this->uri(self::MODULE . '.activity-action'),
+            'actionUri' => $this->uri(self::MODULE . '.activity-action', $filters + ['page' => $page]),
             'detail' => $detail,
             'attempts' => $attempts,
         ]);
@@ -277,6 +378,7 @@ final readonly class ModuleController
         $status = DeliveryStatus::tryFrom($this->stringInput($form['status'] ?? null));
 
         return new RedirectResponse($this->uri(self::MODULE . '.activity', [
+            'search' => mb_substr(trim($this->stringInput($form['search'] ?? null)), 0, 200),
             'status' => $status->value ?? '',
         ]));
     }
@@ -284,10 +386,17 @@ final readonly class ModuleController
     public function activityAction(ServerRequestInterface $request): ResponseInterface
     {
         $form = $this->form($request);
+        $query = $request->getQueryParams();
+        $status = DeliveryStatus::tryFrom($this->stringInput($query['status'] ?? null));
+        $filters = [
+            'status' => $status->value ?? '',
+            'search' => mb_substr(trim($this->stringInput($query['search'] ?? null)), 0, 200),
+            'page' => $this->positiveInt($query['page'] ?? null) ?? 1,
+        ];
         $uid = $this->positiveInt($form['delivery'] ?? null);
         $action = $this->stringInput($form['delivery_action'] ?? null);
         if ($uid === null) {
-            return $this->redirect('activity', 'A valid delivery ID is required.', 'error');
+            return $this->redirect('activity', 'A valid delivery ID is required.', 'error', $filters);
         }
         try {
             $row = $this->deliveries->findRow($uid);
@@ -308,9 +417,9 @@ final readonly class ModuleController
             if (!$changed) {
                 throw new RuntimeException('The requested action is not valid for the current delivery state.');
             }
-            return $this->redirect('activity', 'Delivery action completed.');
+            return $this->redirect('activity', 'Delivery action completed.', 'success', $filters);
         } catch (Throwable $exception) {
-            return $this->redirect('activity', $this->redactor->redact($exception->getMessage()), 'error');
+            return $this->redirect('activity', $this->redactor->redact($exception->getMessage()), 'error', $filters);
         }
     }
 
@@ -325,7 +434,15 @@ final readonly class ModuleController
         $moduleTemplate = $this->moduleTemplateFactory->create($request);
         $moduleTemplate->setTitle('ViewMend Site Tracker');
         $docHeader = $moduleTemplate->getDocHeaderComponent();
-        $docHeader->disableAutomaticReloadButton();
+        if ((new Typo3Version())->getMajorVersion() >= 14) {
+            $docHeader->disableAutomaticReloadButton();
+        }
+        $this->pageRenderer->addCssFile('EXT:viewmend_site_tracker/Resources/Public/Css/dashboard.css');
+        foreach (['dashboard', 'forms'] as $script) {
+            $this->pageRenderer->getJavaScriptRenderer()->addJavaScriptModuleInstruction(
+                JavaScriptModuleInstruction::create('@viewmend/site-tracker/' . $script . '.js'),
+            );
+        }
         $moduleTemplate->assignMultiple(array_merge($variables, [
             'active' => $active,
             'overviewUri' => $this->uri(self::MODULE),
@@ -468,14 +585,19 @@ final readonly class ModuleController
         return (string) $this->uriBuilder->buildUriFromRoute($route, $parameters);
     }
 
-    private function redirect(string $section, string $notice, string $severity = 'success'): ResponseInterface
-    {
+    /** @param array<string, int|string> $parameters */
+    private function redirect(
+        string $section,
+        string $notice,
+        string $severity = 'success',
+        array $parameters = [],
+    ): ResponseInterface {
         $route = $section === 'overview' ? self::MODULE : self::MODULE . '.' . $section;
 
         return new RedirectResponse($this->uri($route, [
             'notice' => $notice,
             'severity' => $severity,
-        ]));
+        ] + $parameters));
     }
 
     private function formatTimestamp(int $timestamp): string

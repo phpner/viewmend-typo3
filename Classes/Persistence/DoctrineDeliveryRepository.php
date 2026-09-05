@@ -287,21 +287,45 @@ final readonly class DoctrineDeliveryRepository implements DeliveryRepositoryInt
         return $counts;
     }
 
-    public function findRecent(?DeliveryStatus $status, ?string $siteIdentifier, int $limit = 100): array
+    public function findRecent(
+        ?DeliveryStatus $status,
+        ?string $siteIdentifier,
+        int $limit = 100,
+        int $offset = 0,
+        string $search = ''
+    ): array {
+        return $this->activityQuery($status, $siteIdentifier, $search)->select('*')
+            ->orderBy('uid', 'DESC')->setMaxResults(max(1, min(200, $limit)))
+            ->setFirstResult(max(0, $offset))->executeQuery()->fetchAllAssociative();
+    }
+
+    public function countRecent(?DeliveryStatus $status, ?string $siteIdentifier, string $search = ''): int
     {
-        $query = $this->connections->forTable(self::TABLE)->createQueryBuilder()
-            ->select('*')
-            ->from(self::TABLE)
-            ->orderBy('uid', 'DESC')
-            ->setMaxResults(max(1, min(200, $limit)));
+        return ScalarValue::int($this->activityQuery($status, $siteIdentifier, $search)
+            ->count('uid')->executeQuery()->fetchOne());
+    }
+
+    private function activityQuery(
+        ?DeliveryStatus $status,
+        ?string $siteIdentifier,
+        string $search
+    ): \TYPO3\CMS\Core\Database\Query\QueryBuilder {
+        $query = $this->connections->forTable(self::TABLE)->createQueryBuilder()->from(self::TABLE);
         if ($status !== null) {
             $query->andWhere('status = :status')->setParameter('status', $status->value);
         }
         if ($siteIdentifier !== null && $siteIdentifier !== '') {
             $query->andWhere('site_identifier = :site')->setParameter('site', $siteIdentifier);
         }
-
-        return $query->executeQuery()->fetchAllAssociative();
+        $search = mb_substr(trim($search), 0, 200);
+        if ($search !== '') {
+            $columns = ['event_id', 'event_type', 'title', 'payload', 'api_delivery_id', 'api_event_id'];
+            $query->andWhere('(' . implode(' OR ', array_map(
+                static fn (string $column): string => $column . " LIKE :search ESCAPE '!'",
+                $columns,
+            )) . ')')->setParameter('search', '%' . strtr($search, ['!' => '!!', '%' => '!%', '_' => '!_']) . '%');
+        }
+        return $query;
     }
 
     public function attempts(int $deliveryUid): array

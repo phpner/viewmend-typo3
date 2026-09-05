@@ -2,11 +2,12 @@
 <f:layout name="Module" />
 <f:section name="Content">
     <h1>Activity</h1>
-    <p class="lead">One local lifecycle for every duplicate-safe ViewMend delivery.</p>
+    <p class="lead">Follow event delivery and inspect the response from ViewMend.</p>
     <f:render partial="Module/Navigation" arguments="{_all}" />
 
     <form method="post" action="{filterUri}" class="row g-2 align-items-end mb-3">
         <div class="col-sm-5 col-lg-3"><label class="form-label" for="activity-status">Status</label><select class="form-select" id="activity-status" name="viewmend[status]"><option value="" <f:if condition="!{selectedStatus}">selected</f:if>>All statuses</option><f:for each="{statuses}" as="status"><option value="{status.value}" <f:if condition="{status.selected}">selected</f:if>>{status.value}</option></f:for></select></div>
+        <div class="col-sm-6"><label class="form-label" for="activity-search">Search events, URLs or delivery IDs</label><input class="form-control" id="activity-search" type="search" name="viewmend[search]" value="{search}" maxlength="200"></div>
         <div class="col-auto"><button class="btn btn-default" type="submit">Filter</button></div>
     </form>
 
@@ -23,9 +24,9 @@
                         <td>{row.updated_label}</td>
                         <td>
                             <div class="d-flex flex-wrap gap-1">
-                                <f:if condition="{row.can_run}"><form method="post" action="{actionUri}"><input type="hidden" name="viewmend[delivery]" value="{row.uid}"><button class="btn btn-sm btn-default" name="viewmend[delivery_action]" value="run">Run now</button></form></f:if>
-                                <f:if condition="{row.can_retry}"><form method="post" action="{actionUri}"><input type="hidden" name="viewmend[delivery]" value="{row.uid}"><button class="btn btn-sm btn-warning" name="viewmend[delivery_action]" value="retry">Retry</button></form></f:if>
-                                <f:if condition="{row.can_cancel}"><form method="post" action="{actionUri}"><input type="hidden" name="viewmend[delivery]" value="{row.uid}"><button class="btn btn-sm btn-danger" name="viewmend[delivery_action]" value="cancel">Cancel</button></form></f:if>
+                                <f:if condition="{row.can_run}"><form data-viewmend-submit-once method="post" action="{actionUri}"><input type="hidden" name="viewmend[delivery]" value="{row.uid}"><button type="submit" class="btn btn-sm btn-default" name="viewmend[delivery_action]" value="run">Run now</button></form></f:if>
+                                <f:if condition="{row.can_retry}"><form data-viewmend-submit-once method="post" action="{actionUri}"><input type="hidden" name="viewmend[delivery]" value="{row.uid}"><button type="submit" class="btn btn-sm btn-warning" name="viewmend[delivery_action]" value="retry">Retry</button></form></f:if>
+                                <f:if condition="{row.can_cancel}"><form data-viewmend-submit-once method="post" action="{actionUri}"><input type="hidden" name="viewmend[delivery]" value="{row.uid}"><button type="submit" class="btn btn-sm btn-danger" name="viewmend[delivery_action]" value="cancel">Cancel</button></form></f:if>
                             </div>
                         </td>
                     </tr>
@@ -35,8 +36,10 @@
         </table>
     </div>
 
+    <nav class="d-flex flex-wrap align-items-center gap-3" aria-label="Activity pages"><span>Deliveries: {total} · Page {page} of {pageCount}</span><f:if condition="{previousUri}"><a class="btn btn-default" href="{previousUri}">Previous</a></f:if><f:if condition="{nextUri}"><a class="btn btn-default" href="{nextUri}">Next</a></f:if></nav>
+
     <f:if condition="{detail}">
-        <div class="card mt-4"><div class="card-header"><strong>Delivery #{detail.uid}</strong></div><div class="card-body"><dl class="row mb-0"><dt class="col-sm-3">Event ID</dt><dd class="col-sm-9 text-break"><code>{detail.event_id}</code></dd><dt class="col-sm-3">Type</dt><dd class="col-sm-9">{detail.event_type}</dd><dt class="col-sm-3">Status</dt><dd class="col-sm-9">{detail.status}</dd><dt class="col-sm-3">ViewMend delivery</dt><dd class="col-sm-9 text-break">{detail.api_delivery_id}</dd><dt class="col-sm-3">ViewMend queue</dt><dd class="col-sm-9">{detail.queue_status}</dd><dt class="col-sm-3">Safe response summary</dt><dd class="col-sm-9">{detail.response_summary}</dd></dl></div></div>
+        <div class="card mt-4"><div class="card-header"><strong>Delivery #{detail.uid}</strong></div><div class="card-body"><dl class="row mb-0"><dt class="col-sm-3">Event ID</dt><dd class="col-sm-9 text-break"><code>{detail.event_id}</code></dd><dt class="col-sm-3">Type</dt><dd class="col-sm-9">{detail.event_type}</dd><dt class="col-sm-3">Status</dt><dd class="col-sm-9">{detail.status}</dd><dt class="col-sm-3">ViewMend delivery</dt><dd class="col-sm-9 text-break">{detail.api_delivery_id}</dd><dt class="col-sm-3">ViewMend queue</dt><dd class="col-sm-9">{detail.queue_status}</dd><dt class="col-sm-3">ViewMend event ID</dt><dd class="col-sm-9 text-break">{detail.api_event_id}</dd><f:for each="{detail.metadata}" as="field"><dt class="col-sm-3">{field.label}</dt><dd class="col-sm-9">{field.value}</dd></f:for><dt class="col-sm-3">Affected URLs</dt><dd class="col-sm-9"><f:for each="{detail.page_urls}" as="url"><div class="text-break">{url}</div></f:for><f:if condition="!{detail.page_urls}">No individual URLs were sent.</f:if></dd></dl></div></div>
         <div class="card mt-3"><div class="card-header"><strong>Attempts</strong></div><div class="table-responsive"><table class="table mb-0"><thead><tr><th>Attempt</th><th>Outcome</th><th>HTTP</th><th>Started</th><th>Finished</th><th>Message</th></tr></thead><tbody><f:for each="{attempts}" as="attempt"><tr><td>{attempt.attempt_number}</td><td>{attempt.outcome}</td><td>{attempt.http_status}</td><td>{attempt.started_label}</td><td>{attempt.finished_label}</td><td>{attempt.message}</td></tr></f:for><f:if condition="!{attempts}"><tr><td colspan="6" class="text-center text-body-secondary">No network attempts recorded.</td></tr></f:if></tbody></table></div></div>
     </f:if>
 </f:section>

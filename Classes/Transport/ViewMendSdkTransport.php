@@ -32,6 +32,7 @@ use ViewMend\Exception\NetworkException;
 use ViewMend\Exception\RateLimitException;
 use ViewMend\Exception\ServerException;
 use ViewMend\Exception\TransportException;
+use ViewMend\Exception\UnexpectedResponseException;
 use ViewMend\SiteTracker\PendingEvent;
 use ViewMend\Typo3SiteTracker\Domain\EventType;
 use ViewMend\Typo3SiteTracker\Domain\OutgoingEvent;
@@ -81,12 +82,12 @@ final readonly class ViewMendSdkTransport implements DeliveryTransportInterface
                 'event_id' => $result->eventId->value,
                 'duplicate' => $result->duplicate,
                 'queue_status' => $result->queueStatus->value,
-                'summary' => sprintf(
-                    'affected=%d ignored=%d checks=%d',
-                    $result->affectedPages,
-                    $result->ignoredUrls,
-                    $result->checksQueued,
-                ),
+                'summary' => json_encode([
+                    'affected_pages' => $result->affectedPages,
+                    'ignored_urls' => $result->ignoredUrls,
+                    'checks_queued' => $result->checksQueued,
+                    'scheduled_for' => $result->scheduledFor?->format(DATE_ATOM),
+                ], JSON_THROW_ON_ERROR),
             ];
         } catch (RateLimitException $exception) {
             throw new DeliveryException(
@@ -99,6 +100,8 @@ final readonly class ViewMendSdkTransport implements DeliveryTransportInterface
             throw new DeliveryException($exception->getMessage(), true, $exception->statusCode);
         } catch (NetworkException $exception) {
             throw new DeliveryException($exception->getMessage(), true);
+        } catch (UnexpectedResponseException $exception) {
+            throw new DeliveryException($exception->getMessage(), true, $exception->statusCode);
         } catch (ApiException $exception) {
             throw new DeliveryException($exception->getMessage(), false, $exception->statusCode);
         } catch (TransportException $exception) {

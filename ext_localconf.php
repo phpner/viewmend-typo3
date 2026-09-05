@@ -32,3 +32,5 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['proc
     DataHandlerHook::class;
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] =
     DataHandlerHook::class;
+
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['viewmend_site_tracker'] ??= [];

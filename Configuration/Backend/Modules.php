@@ -39,6 +39,9 @@ return [
                 'target' => ModuleController::class . '::overview',
                 'methods' => ['GET'],
             ],
+            'overview-filter' => ['target' => ModuleController::class . '::filterOverview', 'methods' => ['POST']],
+            'refresh' => ['target' => ModuleController::class . '::refreshDashboard', 'methods' => ['POST']],
+            'resources' => ['target' => ModuleController::class . '::resources', 'methods' => ['GET']],
             'connection' => [
                 'target' => ModuleController::class . '::connection',
                 'methods' => ['GET'],

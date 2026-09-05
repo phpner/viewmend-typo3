@@ -23,7 +23,8 @@ COPY --from=composer-bin /usr/bin/composer /usr/local/bin/composer
 COPY Tests/E2E/apache.conf /etc/apache2/sites-available/000-default.conf
 
 WORKDIR /var/www/html
-RUN composer create-project --no-interaction --prefer-dist typo3/cms-base-distribution:^14.3 .
+ARG TYPO3_VERSION=^14.3
+RUN composer create-project --no-interaction --prefer-dist "typo3/cms-base-distribution:${TYPO3_VERSION}" .
 
 COPY . /opt/viewmend-site-tracker
 RUN composer config repositories.viewmend path /opt/viewmend-site-tracker \

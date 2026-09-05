@@ -1,0 +1,303 @@
+{
+  "data": {
+    "site": {
+      "group_id": "00000000-0000-4000-8000-000000000101",
+      "name": "Demo Store"
+    },
+    "scope": {
+      "device": "desktop",
+      "page": {
+        "id": "00000000-0000-4000-8000-000000000201",
+        "url": "https://demo.example.com/",
+        "last_checked_at": "2026-09-04T10:18:00+01:00"
+      },
+      "available_pages": [
+        {
+          "id": "00000000-0000-4000-8000-000000000201",
+          "url": "https://demo.example.com/",
+          "last_checked_at": "2026-09-04T10:18:00+01:00"
+        },
+        {
+          "id": "00000000-0000-4000-8000-000000000202",
+          "url": "https://demo.example.com/pricing/",
+          "last_checked_at": "2026-09-04T10:14:00+01:00"
+        },
+        {
+          "id": "00000000-0000-4000-8000-000000000203",
+          "url": "https://demo.example.com/checkout/",
+          "last_checked_at": "2026-09-04T10:09:00+01:00"
+        }
+      ]
+    },
+    "summary": {
+      "health_score": 94,
+      "health_score_delta": 6,
+      "tracked_pages": 12,
+      "checked_pages": 12,
+      "open_issues": 4,
+      "critical_issues": 1
+    },
+    "latest_check": {
+      "run_id": "00000000-0000-4000-8000-000000000301",
+      "status": "completed",
+      "finished_at": "2026-09-04T10:18:00+01:00",
+      "has_comparison": true
+    },
+    "links": {
+      "issues": "/app/tracker/groups/00000000-0000-4000-8000-000000000101/pages/00000000-0000-4000-8000-000000000201/issues?device=desktop",
+      "issue_history": "/app/tracker/groups/00000000-0000-4000-8000-000000000101/pages/00000000-0000-4000-8000-000000000201/change-history?device=desktop&check=00000000-0000-4000-8000-000000000301&mode=issues&issue_filter=attention",
+      "resource_history": "/app/tracker/groups/00000000-0000-4000-8000-000000000101/pages/00000000-0000-4000-8000-000000000201/change-history?device=desktop&check=00000000-0000-4000-8000-000000000301&mode=resources",
+      "performance_history": "/app/tracker/groups/00000000-0000-4000-8000-000000000101/pages/00000000-0000-4000-8000-000000000201/change-history?device=desktop&check=00000000-0000-4000-8000-000000000301&mode=performance"
+    },
+    "needs_attention": {
+      "total": 4,
+      "items": [
+        {
+          "id": "finding:demo-checkout-button",
+          "source": "finding",
+          "severity": "critical",
+          "title": "Checkout button is no longer visible",
+          "message": null,
+          "status": "detected",
+          "page_id": "00000000-0000-4000-8000-000000000203",
+          "page_url": "https://demo.example.com/checkout/",
+          "occurred_at": "2026-09-04T10:09:00+01:00"
+        },
+        {
+          "id": "content:demo-price-change",
+          "source": "content_change",
+          "severity": "warning",
+          "title": "Price changed",
+          "message": "\u00a329 per month \u2192 \u00a335 per month",
+          "status": "detected",
+          "page_id": "00000000-0000-4000-8000-000000000202",
+          "page_url": "https://demo.example.com/pricing/",
+          "occurred_at": "2026-09-04T10:14:00+01:00"
+        },
+        {
+          "id": "content:demo-form-change",
+          "source": "content_change",
+          "severity": "warning",
+          "title": "New form detected",
+          "message": "0 forms \u2192 1 form",
+          "status": "detected",
+          "page_id": "00000000-0000-4000-8000-000000000201",
+          "page_url": "https://demo.example.com/",
+          "occurred_at": "2026-09-04T10:18:00+01:00"
+        },
+        {
+          "id": "finding:demo-banner-overlay",
+          "source": "finding",
+          "severity": "warning",
+          "title": "Cookie banner covers a primary action",
+          "message": null,
+          "status": "detected",
+          "page_id": "00000000-0000-4000-8000-000000000203",
+          "page_url": "https://demo.example.com/checkout/",
+          "occurred_at": "2026-09-04T10:09:00+01:00"
+        }
+      ]
+    },
+    "issue_trend": [
+      {
+        "run_id": "00000000-0000-4000-8000-000000000311",
+        "finished_at": "2026-08-28T10:00:00+01:00",
+        "critical": 2,
+        "warning": 5
+      },
+      {
+        "run_id": "00000000-0000-4000-8000-000000000312",
+        "finished_at": "2026-08-29T10:00:00+01:00",
+        "critical": 2,
+        "warning": 4
+      },
+      {
+        "run_id": "00000000-0000-4000-8000-000000000313",
+        "finished_at": "2026-08-30T10:00:00+01:00",
+        "critical": 1,
+        "warning": 4
+      },
+      {
+        "run_id": "00000000-0000-4000-8000-000000000314",
+        "finished_at": "2026-08-31T10:00:00+01:00",
+        "critical": 1,
+        "warning": 3
+      },
+      {
+        "run_id": "00000000-0000-4000-8000-000000000315",
+        "finished_at": "2026-09-01T10:00:00+01:00",
+        "critical": 1,
+        "warning": 3
+      },
+      {
+        "run_id": "00000000-0000-4000-8000-000000000316",
+        "finished_at": "2026-09-02T10:00:00+01:00",
+        "critical": 1,
+        "warning": 2
+      },
+      {
+        "run_id": "00000000-0000-4000-8000-000000000317",
+        "finished_at": "2026-09-03T10:00:00+01:00",
+        "critical": 0,
+        "warning": 3
+      },
+      {
+        "run_id": "00000000-0000-4000-8000-000000000301",
+        "finished_at": "2026-09-04T10:18:00+01:00",
+        "critical": 1,
+        "warning": 3
+      }
+    ],
+    "transfer": {
+      "available": true,
+      "run_id": "00000000-0000-4000-8000-000000000301",
+      "total_bytes": 274432,
+      "reported_requests": 8,
+      "stored_requests": 8,
+      "truncated": false,
+      "unattributed_bytes": 0,
+      "source": "snapshot",
+      "categories": [
+        {
+          "key": "images",
+          "bytes": 178176,
+          "requests": 3
+        },
+        {
+          "key": "javascript",
+          "bytes": 50176,
+          "requests": 2
+        },
+        {
+          "key": "css",
+          "bytes": 29696,
+          "requests": 2
+        },
+        {
+          "key": "other",
+          "bytes": 16384,
+          "requests": 1
+        }
+      ]
+    },
+    "resource_changes": {
+      "available": true,
+      "items": [
+        {
+          "change_type": "modified",
+          "resource_type": "images",
+          "url": "https://demo.example.com/fileadmin/2026/09/pricing-hero.webp",
+          "mime_type": "image/webp",
+          "before_bytes": 53248,
+          "after_bytes": 77824,
+          "delta_bytes": 24576,
+          "before_status": 200,
+          "after_status": 200
+        },
+        {
+          "change_type": "added",
+          "resource_type": "javascript",
+          "url": "https://demo.example.com/_assets/checkout/js/checkout.js",
+          "mime_type": "application/javascript",
+          "before_bytes": null,
+          "after_bytes": 18432,
+          "delta_bytes": null,
+          "before_status": null,
+          "after_status": 200
+        },
+        {
+          "change_type": "modified",
+          "resource_type": "css",
+          "url": "https://demo.example.com/_assets/site/css/site.css",
+          "mime_type": "text/css",
+          "before_bytes": 15360,
+          "after_bytes": 19456,
+          "delta_bytes": 4096,
+          "before_status": 200,
+          "after_status": 200
+        },
+        {
+          "change_type": "removed",
+          "resource_type": "images",
+          "url": "https://demo.example.com/fileadmin/2026/08/summer-banner.webp",
+          "mime_type": "image/webp",
+          "before_bytes": 31744,
+          "after_bytes": null,
+          "delta_bytes": null,
+          "before_status": 200,
+          "after_status": null
+        }
+      ]
+    },
+    "performance_history": [
+      {
+        "run_id": "00000000-0000-4000-8000-000000000311",
+        "finished_at": "2026-08-28T10:00:00+01:00",
+        "performance_score": 88,
+        "lcp_ms": 1120,
+        "cls": 0.041,
+        "total_blocking_time_ms": 82
+      },
+      {
+        "run_id": "00000000-0000-4000-8000-000000000312",
+        "finished_at": "2026-08-29T10:00:00+01:00",
+        "performance_score": 89,
+        "lcp_ms": 1080,
+        "cls": 0.038,
+        "total_blocking_time_ms": 76
+      },
+      {
+        "run_id": "00000000-0000-4000-8000-000000000313",
+        "finished_at": "2026-08-30T10:00:00+01:00",
+        "performance_score": 90,
+        "lcp_ms": 1010,
+        "cls": 0.032,
+        "total_blocking_time_ms": 65
+      },
+      {
+        "run_id": "00000000-0000-4000-8000-000000000314",
+        "finished_at": "2026-08-31T10:00:00+01:00",
+        "performance_score": 92,
+        "lcp_ms": 930,
+        "cls": 0.028,
+        "total_blocking_time_ms": 51
+      },
+      {
+        "run_id": "00000000-0000-4000-8000-000000000315",
+        "finished_at": "2026-09-01T10:00:00+01:00",
+        "performance_score": 91,
+        "lcp_ms": 970,
+        "cls": 0.025,
+        "total_blocking_time_ms": 47
+      },
+      {
+        "run_id": "00000000-0000-4000-8000-000000000316",
+        "finished_at": "2026-09-02T10:00:00+01:00",
+        "performance_score": 93,
+        "lcp_ms": 860,
+        "cls": 0.019,
+        "total_blocking_time_ms": 34
+      },
+      {
+        "run_id": "00000000-0000-4000-8000-000000000317",
+        "finished_at": "2026-09-03T10:00:00+01:00",
+        "performance_score": 95,
+        "lcp_ms": 790,
+        "cls": 0.014,
+        "total_blocking_time_ms": 24
+      },
+      {
+        "run_id": "00000000-0000-4000-8000-000000000301",
+        "finished_at": "2026-09-04T10:18:00+01:00",
+        "performance_score": 94,
+        "lcp_ms": 820,
+        "cls": 0.012,
+        "total_blocking_time_ms": 18
+      }
+    ]
+  },
+  "meta": {
+    "generated_at": "2026-09-04T10:18:05+01:00",
+    "sample": true
+  }
+}

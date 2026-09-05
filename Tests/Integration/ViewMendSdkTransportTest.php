@@ -85,6 +85,8 @@ final class ViewMendSdkTransportTest extends TestCase
 
         self::assertFalse($result['duplicate']);
         self::assertSame('delivery-1', $result['delivery_id']);
+        self::assertSame('server-event-1', $result['event_id']);
+        self::assertSame(1, json_decode($result['summary'], true)['affected_pages']);
         self::assertCount(1, $http->requests);
         $request = $http->requests[0];
         self::assertSame(
@@ -139,6 +141,40 @@ final class ViewMendSdkTransportTest extends TestCase
             self::assertSame(422, $exception->httpStatus);
         }
         self::assertCount(2, $http->requests);
+    }
+
+    public function testMalformedAcknowledgementCanBeRetriedWithTheOriginalEventId(): void
+    {
+        $http = new SequenceHttpClient([new Response(
+            202,
+            [],
+            '{"ok":true}'
+        ),
+            new Response(
+                200,
+                [],
+                '<html>broken</html>'
+            )]);
+        $transport = new ViewMendSdkTransport($this->factory($http));
+        $event = new OutgoingEvent(
+            eventId: 'stable-retry',
+            type: EventType::Custom,
+            title: 'Test',
+            occurredAt: new DateTimeImmutable('2026-09-05T12:00:00Z'),
+            siteUrl: 'https://example.com/',
+            pageUrls: [],
+            environment: 'production',
+        );
+        for ($i = 0; $i < 2; $i++) {
+            try {
+                $transport->send($event, 'integration', 'private-token');
+                self::fail('Malformed responses cannot be accepted.');
+            } catch (DeliveryException $exception) {
+                self::assertTrue($exception->retryable);
+            }
+        }
+        self::assertSame((string) $http->requests[0]->getBody(), (string) $http->requests[1]->getBody());
+        self::assertSame('stable-retry', json_decode((string) $http->requests[1]->getBody(), true)['event_id']);
     }
 
     private function factory(SequenceHttpClient $http): ViewMendClientFactoryInterface

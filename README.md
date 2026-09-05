@@ -31,6 +31,14 @@ Run the worker every minute:
 * * * * * cd /path/to/typo3 && vendor/bin/typo3 viewmend:process --no-interaction
 ```
 
+## Monitoring dashboard
+
+Overview displays ViewMend site health, project-wide issue counts, searchable findings and selected-page trends. Switch the page or device to inspect changed resources, transferred bytes and up to 30 retained performance checks. Charts support pointer and keyboard inspection and include data tables. Select a transfer category to load its stored requests, then search the inventory in place.
+
+Dashboard reads use server-side credentials and a five-minute cache. **Refresh data** fetches current statistics; it does not start a new check. Missing and partial results remain visible. Local delivery health is available below the monitoring results.
+
+Activity supports search by event, affected URL or delivery identifier, with 25 rows per page. Delivery details distinguish the original event ID, ViewMend's event ID, matched pages, queued checks and unknown response values. Existing history remains readable after an upgrade.
+
 ## What is tracked
 
 The extension records a transition only after TYPO3 has a resolvable canonical public URL and an anonymously public live record for the configured site.
@@ -64,7 +72,7 @@ The Activity section exposes these states:
 - `permanently_failed`
 - `cancelled`
 
-Transient network, rate-limit and server errors use bounded exponential backoff with jitter and honour `Retry-After`. Permanent API errors stop automatically. Expired worker leases are recovered safely. The original event ID and payload are retained across every attempt, so a delivery accepted before a worker crash is recognised as a duplicate by ViewMend rather than creating a second logical event.
+Malformed acknowledgements, transient network, rate-limit and server errors use bounded exponential backoff with jitter and honour `Retry-After`. Permanent API errors stop automatically. Expired worker leases are recovered safely. The original event ID and payload are retained across every attempt, so a delivery accepted before a worker crash is recognised as a duplicate by ViewMend rather than creating a second logical event.
 
 Delivered history is retained for 30 days by default. Cleanup removes only `accepted` and `duplicate` deliveries older than the configured period; active, failed and cancelled records are preserved.
 

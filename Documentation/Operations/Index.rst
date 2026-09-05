@@ -15,7 +15,7 @@ Run once per minute through cron or TYPO3 Scheduler:
     vendor/bin/typo3 viewmend:process --limit=20 --reconcile-limit=100
 
 The worker first recovers expired leases, then claims due rows atomically.
-Transient failures use bounded backoff and jitter, and honour ``Retry-After``.
+Malformed acknowledgements and transient failures use bounded backoff and jitter, and honour ``Retry-After``.
 The same event ID and payload are reused on every attempt.
 
 Deployment marker
@@ -48,3 +48,9 @@ in-progress deliveries cannot be cancelled manually.
 
 System Reports exposes connection, queue and worker freshness status without
 revealing secrets.
+
+Search Activity by event, affected page URL or delivery identifier. Pagination
+keeps the selected status and search, and each page contains up to 25 rows.
+Details show the caller and server event identifiers separately, matched pages,
+ignored URLs, queued checks and the server schedule. Unavailable response
+values are shown as unknown, including in history saved by older versions.

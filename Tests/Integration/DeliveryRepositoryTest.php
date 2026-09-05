@@ -213,6 +213,27 @@ final class DeliveryRepositoryTest extends TestCase
         );
     }
 
+    public function testSearchPaginationAndLiteralWildcardsStayWithinTheSite(): void
+    {
+        for ($i = 0; $i < 30; $i++) {
+            $this->repository->enqueue(new OutgoingEvent(
+                eventId: 'search-' . $i,
+                type: EventType::Custom,
+                title: 'Price 50%_off',
+                occurredAt: $this->clock->now(),
+                siteUrl: 'https://example.com/',
+                pageUrls: ['https://example.com/catalog/item'],
+                environment: 'production',
+            ), 'main');
+        }
+        $this->repository->enqueue($this->event(), 'secondary');
+        self::assertSame(30, $this->repository->countRecent(null, 'main', '%_'));
+        self::assertSame(0, $this->repository->countRecent(null, 'main', 'missing'));
+        self::assertCount(5, $this->repository->findRecent(null, 'main', 25, 25, 'catalog/item'));
+        self::assertSame(1, $this->repository->countRecent(null, 'secondary'));
+        self::assertSame(0, $this->repository->countRecent(DeliveryStatus::Accepted, 'main'));
+    }
+
     private function memoryBackend(): TransientMemoryBackend
     {
         $class = new ReflectionClass(TransientMemoryBackend::class);
