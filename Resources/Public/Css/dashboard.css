@@ -1,6 +1,12 @@
 .viewmend-dashboard {
   --viewmend-muted: var(--typo3-text-color-secondary, #55565b);
-  --viewmend-success: color-mix(in srgb, var(--typo3-state-success-bg, #287d3c) 45%, var(--typo3-text-color-base, #333));
+  --viewmend-blue: light-dark(#2563eb, #60a5fa);
+  --viewmend-amber: light-dark(#b45309, #fbbf24);
+  --viewmend-amber-stroke: light-dark(#cc7000, #fbbf24);
+  --viewmend-violet: light-dark(#7c3aed, #a78bfa);
+  --viewmend-slate: light-dark(#58677d, #94a3b8);
+  --viewmend-success: light-dark(#15803d, #4ade80);
+  --viewmend-critical: light-dark(#b91c1c, #f87171);
   max-width: none;
   color: var(--typo3-text-color-base, #232429);
   font-size: inherit;
@@ -48,7 +54,7 @@
 .viewmend-eyebrow { display: block; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.045em; text-transform: uppercase; color: var(--viewmend-muted); }
 .viewmend-health-value { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; }
 .viewmend-health-value > strong { font-size: 1.75rem; line-height: 1.6; font-variant-numeric: tabular-nums; }
-.viewmend-health-value meter { width: 4rem; height: 0.75rem; accent-color: color-mix(in srgb, var(--typo3-state-warning-bg, #b28e00) 45%, var(--typo3-text-color-base, #333)); }
+.viewmend-health-value meter { width: 4rem; height: 0.75rem; accent-color: var(--viewmend-success); }
 .viewmend-scope { display: flex; align-items: end; flex-wrap: wrap; gap: 1rem; padding-block: 1rem; }
 .viewmend-scope > div { flex: 1 1 17rem; }
 .viewmend-scope > div small { display: block; }
@@ -108,7 +114,7 @@
 .viewmend-transfer-legend button { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.25rem; font-size: 0.75rem; background: transparent; border: 0; color: inherit; }
 .viewmend-transfer-legend button[aria-expanded="true"] { background: var(--typo3-surface-container-high, #e5edff); }
 .viewmend-transfer-note { grid-column: 1 / -1; color: var(--viewmend-muted); font-size: 0.75rem; }
-.viewmend-legend-key::before { content: ""; display: inline-block; width: 0.6rem; height: 0.2rem; background: currentColor; vertical-align: middle; margin-inline-end: 0.4rem; }
+.viewmend-legend-key::before { content: ""; display: inline-block; width: 0.6rem; height: 0.2rem; background: var(--viewmend-series-color, currentColor); vertical-align: middle; margin-inline-end: 0.4rem; }
 .viewmend-performance { min-width: 0; }
 .viewmend-metric { display: grid; grid-template-columns: minmax(9rem, 0.9fr) minmax(0, 1.5fr); gap: 1rem; padding: 1rem 1.5rem; border-block-end: 1px solid var(--typo3-component-border-color, #ddd); }
 .viewmend-metric-summary > small { display: block; font-size: 0.72rem; }
@@ -149,26 +155,27 @@
 .viewmend-request-search { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; font-size: 0.8rem; }
 .viewmend-request-search input { max-width: 100%; min-height: 2.5rem; }
 .viewmend-freshness { font-size: 0.79rem; color: var(--viewmend-muted); padding-block: 1rem; }
-.viewmend-color-critical { color: color-mix(in srgb, var(--typo3-state-danger-bg, #d72222) 45%, var(--typo3-text-color-base, #333)) !important; }
-.viewmend-color-warning { color: color-mix(in srgb, var(--typo3-state-warning-bg, #9c7c00) 45%, var(--typo3-text-color-base, #333)) !important; }
-.viewmend-color-performance,
-.viewmend-color-css { color: color-mix(in srgb, var(--typo3-state-primary-bg, #003ecc) 45%, var(--typo3-text-color-base, #333)); }
-.viewmend-color-lcp { color: color-mix(in srgb, var(--typo3-state-danger-bg, #d72222) 45%, var(--typo3-text-color-base, #333)); }
-.viewmend-color-cls { color: var(--viewmend-success); }
+.viewmend-color-critical { --viewmend-series-color: var(--viewmend-critical); color: var(--viewmend-critical) !important; }
+.viewmend-color-warning { --viewmend-series-color: var(--viewmend-amber-stroke); color: var(--viewmend-amber) !important; }
+.viewmend-color-performance { --viewmend-series-color: var(--viewmend-success); color: var(--viewmend-success); }
+.viewmend-color-lcp,
+.viewmend-color-images { --viewmend-series-color: var(--viewmend-blue); color: var(--viewmend-blue); }
+.viewmend-color-cls,
+.viewmend-color-css { --viewmend-series-color: var(--viewmend-violet); color: var(--viewmend-violet); }
 .viewmend-color-tbt,
-.viewmend-color-images { color: var(--viewmend-success); }
-.viewmend-color-javascript { color: color-mix(in srgb, var(--typo3-state-info-bg, #002e9a) 45%, var(--typo3-text-color-base, #333)); }
-.viewmend-color-other { color: var(--typo3-text-color-secondary, #6b6b75); }
-.viewmend-stroke-critical,
-.viewmend-stroke-lcp { stroke: color-mix(in srgb, var(--typo3-state-danger-bg, #d72222) 45%, var(--typo3-text-color-base, #333)); }
-.viewmend-stroke-warning { stroke: color-mix(in srgb, var(--typo3-state-warning-bg, #ffd23f) 45%, var(--typo3-text-color-base, #333)); }
-.viewmend-stroke-performance,
-.viewmend-stroke-css { stroke: color-mix(in srgb, var(--typo3-state-primary-bg, #003ecc) 45%, var(--typo3-text-color-base, #333)); }
-.viewmend-stroke-cls,
+.viewmend-color-javascript { --viewmend-series-color: var(--viewmend-amber-stroke); color: var(--viewmend-amber); }
+.viewmend-color-other { --viewmend-series-color: var(--viewmend-slate); color: var(--viewmend-slate); }
+.viewmend-stroke-critical { stroke: var(--viewmend-critical); }
+.viewmend-stroke-warning,
 .viewmend-stroke-tbt,
-.viewmend-stroke-images { stroke: color-mix(in srgb, var(--typo3-state-success-bg, #00875a) 45%, var(--typo3-text-color-base, #333)); }
-.viewmend-stroke-javascript { stroke: color-mix(in srgb, var(--typo3-state-info-bg, #002e9a) 45%, var(--typo3-text-color-base, #333)); }
-.viewmend-stroke-other { stroke: var(--typo3-text-color-secondary, #6b6b75); }
+.viewmend-stroke-javascript { stroke: var(--viewmend-amber-stroke); }
+.viewmend-stroke-performance { stroke: var(--viewmend-success); }
+.viewmend-stroke-lcp,
+.viewmend-stroke-images { stroke: var(--viewmend-blue); }
+.viewmend-stroke-cls,
+.viewmend-stroke-css { stroke: var(--viewmend-violet); }
+.viewmend-stroke-other { stroke: var(--viewmend-slate); }
+.viewmend-transfer-legend .viewmend-legend-key { color: var(--typo3-text-color-base, #232429); }
 
 @media (max-width: 80rem) {
   .viewmend-panel-header { flex-wrap: wrap; }
