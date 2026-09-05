@@ -6,7 +6,7 @@ ViewMend Site Tracker for TYPO3 is the official extension for [TYPO3 website cha
 
 ## Compatibility
 
-| Component | Supported and verified |
+| Component | Supported versions |
 |---|---|
 | TYPO3 | 13.4 LTS and 14.3 |
 | PHP | 8.3, 8.4 and 8.5 |
@@ -14,12 +14,12 @@ ViewMend Site Tracker for TYPO3 is the official extension for [TYPO3 website cha
 | ViewMend SDK | `viewmend/sdk` 1.x |
 | Database | MariaDB is the end-to-end and CI target; SQLite is used for focused repository tests |
 
-TYPO3 12.4 is not supported because free community maintenance ended on 30 April 2026. PostgreSQL is not currently claimed in the extension test matrix.
+TYPO3 12.4 is not supported. PostgreSQL is not included in the test matrix.
 
 ## Quick start
 
 ```bash
-composer require viewmend/typo3-site-tracker:^1.0
+composer require viewmend/typo3-site-tracker:^1.2
 vendor/bin/typo3 extension:setup
 ```
 
@@ -56,7 +56,7 @@ The extension records a transition only after TYPO3 has a resolvable canonical p
 
 Drafts, workspace versions, intermediate DataHandler calls, future records, expired records, frontend-group-restricted records and URLs outside the selected TYPO3 site binding are not sent. Translations keep their language-specific canonical URL and local observation. One extension configuration binds one TYPO3 site identifier and base URL, so multisite events cannot be mixed silently.
 
-Automatic site-configuration and extension install/update/remove markers are intentionally not claimed. The supported public TYPO3 lifecycle APIs do not provide a single post-completion signal with enough information to distinguish all of those operations reliably across both supported branches.
+Site-configuration changes and extension installation, updates and removal require an explicit deployment marker. Add the deployment command to the pipeline after these operations complete.
 
 ## Delivery lifecycle
 
@@ -108,12 +108,10 @@ The Event rules section controls:
 - global event capture;
 - page and content-element tracking;
 - publish, update, unpublish and delete transitions independently;
-- allowed numeric page `doktype` values;
-- allowed content element `CType` identifiers;
 - optional full-cache-flush markers;
 - delivered-history retention.
 
-Default public types are page `doktype=1` and content types `text`, `textmedia` and `image`. Add project-specific public types explicitly. A custom CType's database fields may affect the local fingerprint, but their values are never copied into a ViewMend event.
+The extension tracks standard pages (`doktype=1`) and anonymously visible content elements, including custom content types. A content element's database fields may affect the local fingerprint, but their values are never copied into a ViewMend event.
 
 ## Deployment monitoring
 
@@ -142,7 +140,7 @@ vendor/bin/typo3 viewmend:status
 # Retry a permanently failed delivery
 vendor/bin/typo3 viewmend:retry 42
 
-# Retry and immediately run the deliberate network action
+# Retry and send immediately
 vendor/bin/typo3 viewmend:retry 42 --run-now
 ```
 
@@ -177,7 +175,7 @@ Before upgrading, back up the database and review [CHANGELOG.md](CHANGELOG.md). 
 2. Run the worker until waiting deliveries are empty, or cancel them deliberately in Activity.
 3. Remove the package with Composer.
 
-TYPO3 does not silently delete extension data during Composer removal. The settings, observations, deliveries and attempts remain recoverable until an administrator explicitly removes the four extension tables through the database schema analyser or a reviewed database migration. Back up audit history before deleting it.
+Composer removal preserves the settings, observations, deliveries and attempts. To remove them, back up the required delivery history, then delete the four extension tables through the database schema analyser or a database migration.
 
 ## Troubleshooting
 
@@ -187,7 +185,7 @@ Run `vendor/bin/typo3 viewmend:status`, then verify that cron or Scheduler runs 
 
 ### Records do not create events
 
-Confirm the selected site identifier/base URL, allowed `doktype`/`CType`, language routing, anonymous frontend access, scheduling and workspace publication state. A draft or unresolved URL is correctly ignored.
+Confirm the selected site identifier/base URL, standard page type (`doktype=1`), language routing, anonymous frontend access, scheduling and workspace publication state. Drafts and unresolved URLs are ignored.
 
 ### Token cannot be stored
 

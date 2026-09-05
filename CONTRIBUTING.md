@@ -31,7 +31,7 @@ For persistence or lifecycle changes, also run the MariaDB/Docker scenario docum
 - Never include content, user/editor data, request data or secrets in outbound events.
 - Treat workspaces, translations, scheduled visibility and multisite binding explicitly.
 - Add a regression test for state-machine, retry, redaction or lifecycle changes.
-- Do not add a second HTTP client; use the published ViewMend SDK transport seam.
+- Send events through the published ViewMend SDK. Dashboard reads use TYPO3's RequestFactory through DashboardHttpTransport with a fixed API origin, bounded responses and redirects disabled.
 - Keep public compatibility claims limited to the tested matrix.
 
 Security reports belong at `support@viewmend.com`, not in public issues.

@@ -15,7 +15,7 @@ recent worker run appears as a System Reports warning.
 No event for an edit
 --------------------
 
-Check site binding, routing, allowed ``doktype``/``CType``, language, workspace,
+Check site binding, routing, standard page type (``doktype=1``), language, workspace,
 scheduling, hidden/deleted state and anonymous frontend groups. Saving a draft
 or an edit whose public fingerprint does not change correctly produces no event.
 
@@ -29,4 +29,5 @@ Encrypted token cannot be read
 ------------------------------
 
 The TYPO3 system encryption key changed or is missing. Enter the token again or
-provide ``VIEWMEND_API_TOKEN``. The old token cannot and should not be displayed.
+provide ``VIEWMEND_API_TOKEN``. Stored tokens are write-only and cannot be recovered
+without the original encryption key.

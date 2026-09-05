@@ -14,15 +14,14 @@ Requirements
 * a TYPO3-supported database; MariaDB is the verified end-to-end target
 * an absolute public base URL in TYPO3 site configuration
 
-TYPO3 12.4 is not supported because its free community maintenance ended on
-30 April 2026.
+TYPO3 12.4 is not supported.
 
 Composer installation
 ---------------------
 
 ..  code-block:: bash
 
-    composer require viewmend/typo3-site-tracker:^1.0
+    composer require viewmend/typo3-site-tracker:^1.2
     vendor/bin/typo3 extension:setup
 
 ``extension:setup`` creates or updates the internal settings, delivery,
@@ -49,5 +48,5 @@ Uninstall
 Disable capture and drain or deliberately cancel waiting events before
 removing the Composer package. TYPO3 does not automatically destroy extension
 data during Composer removal. Remove the four ``tx_viewmendsitetracker_*``
-tables only through a reviewed schema migration or database analyser action,
-after backing up any required audit history.
+tables through a schema migration or the database analyser after backing up
+the required delivery history.

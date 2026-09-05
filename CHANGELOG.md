@@ -16,6 +16,7 @@ All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.
 ### Changed
 
 - Cache dashboard responses for five minutes, isolate cached data by credentials and make current API authentication errors override cached results.
+- Use distinct chart and resource colors with readable labels in light and dark themes.
 - Keep module rendering compatible with TYPO3 13.4 with shared template filenames and conditional automatic reload controls.
 - Retry malformed event acknowledgements with the original event ID and bounded backoff.
 - Exclude development files from source and Composer archives; validate release contents and metadata during packaging.

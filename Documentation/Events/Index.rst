@@ -34,10 +34,9 @@ language-specific router URLs remain separate. The selected site identifier
 and base URL must both match; deliveries from a different site binding are
 permanently stopped instead of being sent under the wrong integration.
 
-Intentionally unsupported automatic events
--------------------------------------------
+Deployment events
+-----------------
 
-Automatic site-configuration and extension install/update/remove events are
-not claimed. The supported public TYPO3 APIs do not offer one reliable,
-post-completion, cross-version signal that distinguishes all required
-operations. Deployment pipelines should use the explicit command instead.
+Site-configuration changes and extension installation, updates and removal
+require an explicit deployment marker. Run ``viewmend:deployment`` after these
+operations complete, using the same event ID when retrying a deployment.

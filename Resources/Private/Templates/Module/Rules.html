@@ -33,6 +33,6 @@
         <button class="btn btn-primary" type="submit">Save event rules</button>
     <p data-unsaved-status role="status">All changes are saved.</p></form>
 
-    <div class="card mt-4"><div class="card-header"><strong>Deployment markers</strong></div><div class="card-body"><p>Use <code>vendor/bin/typo3 viewmend:deployment &lt;stable-event-id&gt;</code> in the deployment pipeline. The command queues locally and returns a non-zero exit code for invalid configuration or input.</p><p class="mb-0">Automatic extension install/update/remove markers are intentionally not claimed because the current public TYPO3 package lifecycle does not provide a single reliable post-completion event that distinguishes all three operations.</p></div></div>
+    <div class="card mt-4"><div class="card-header"><strong>Deployment markers</strong></div><div class="card-body"><p>Use <code>vendor/bin/typo3 viewmend:deployment &lt;stable-event-id&gt;</code> in the deployment pipeline. The command queues locally and returns a non-zero exit code for invalid configuration or input.</p><p class="mb-0">Extension installation, updates and removal require an explicit deployment marker. Run the command after these operations complete.</p></div></div>
 </f:section>
 </html>
