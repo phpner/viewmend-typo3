@@ -4,6 +4,8 @@
 
 ViewMend Site Tracker for TYPO3 is the official extension for [TYPO3 website change monitoring](https://viewmend.com/site-tracker). It records published content changes and deployment markers, stores each event locally, and delivers it asynchronously through the published `viewmend/sdk` contract. See the [integration guides](https://viewmend.com/guides/integrations) for the wider ViewMend ecosystem.
 
+ViewMend also offers free one-page checks that need no integration: the [website SEO checker](https://viewmend.com/seo-checker) reviews indexability, titles, descriptions, headings and structured data, and the [website spell checker](https://viewmend.com/page-text-review) finds spelling and grammar errors in published page text.
+
 ## Compatibility
 
 | Component | Supported versions |
